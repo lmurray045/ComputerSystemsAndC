@@ -1,14 +1,16 @@
-# The first three lines are from https://stackoverflow.com/questions/19023550/how-do-i-add-files-without-dots-in-them-all-extension-less-files-to-the-gitign
 *
 !/**/
-!*.c
-!*.md
-!*.pdf
-!*.h
-!*.tex
-!Makefile
 !.gitignore
 !.gitlab-ci.yml
+!*.c
+!*.h
+!*.sh
+!Makefile
+!*.md
+!*.tex
+!*.pdf
+!*.jpg
+!*.png
 *.o
 *.out
 *.pyc
