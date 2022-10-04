@@ -30,6 +30,8 @@ maxcoords() {
 	#sort maxdata.dat numerically
 	#collect the max number
 	mycoord=$(sort maxdata.dat -n -r | head -n 1)
+	# remove outliers that skew data
+	if (( mycoord > 100000 )); then mycoord=0; fi
 	#collect starting value
 	mxcoord=$(echo $1)
 	#write data into standard output
@@ -46,28 +48,50 @@ histolength() {
 	#write data into standard output
 	echo $ycoord
 }
-
-#create a loop to write a series of x y pairs into maxplot
-#print debug
-echo "printing max plot and length plot data..."
-for i in {2..1000}; do
-	#write data into maxplot.dat and lengthplot.dat
+#create a function to output the starting sequence value and the total value of all of its constituents as an x y coordinate pair
+#function name
+totalcoords() {
+	#run collatz into an output file
+	./collatz -n $1 > totaldata.dat
+	
+	#collect the total value of the sequence
+	#counter variable
+	declare -i runningtotal
+	runningtotal=0
+	FILE=$(head totaldata.dat -n 400)
+	#make a loop iterating through the lines of the file
+	for i in $FILE; do
+		#add value to the running total
+		runningtotal+=$i;
+		done
+	#collect data in the y coordinate variable
+	ycoord=$runningtotal
+	#remove outliers
+	if (( ycoord > 500000 )); then ycoord=0; fi
+	#collect the starting value
+	xcoord=$(echo $1)	
+	#write data into the standard output
+	echo $xcoord $ycoord
+}
+#create a loop to write a series of x y pairs into length plot, maxplot, and 
+#totalplot
+for i in {2..10000}; do
+	#write data into maxplot.dat and lengthplot.dat, and totalplot.dat
 	maxcoords $i | cat >> maxplot.dat;
 	lengthcoords $i | cat >> lengthplot.dat;
+	totalcoords $i | cat >> totalplot.dat;
 	done
-#print debug
-echo "Printing max and long complete"
 
-#create a loop to add the lengths of Collatz sequences to a data file
-for i in {2..1000}; do
+#create a loop to add the lengths of a range of Collatz sequences to a data file for the histogram
+for i in {2..10000}; do
 	echo $(histolength $i) >> temp.dat;
 	done
 #SOURCE CITATION: how to use the awk command: https://www.youtube.com/watch?v=fRZvwBevctA  as well as awk manual (unix)
+#Filter the data, counting how often each length appears, and switch into appropriate x, y coordinate positions
 uniq -c temp.dat | awk -F" " '{ print $2,$1 }' | sort -n >> histoplot.dat
-echo "done printing histogram data"
 
 
-#GNU Plot here-doc (length and max value)
+#GNU Plot here-doc (length, max and total value)
 #help with line style and point types (in the "set style" command came from "https://www.youtube.com/watch?v=F_XcgIxdExE&t=76s" timestamp: 2:20
 gnuplot <<END
 	set terminal pdf
@@ -85,6 +109,14 @@ gnuplot <<END
 	set ylabel "value"
 	set zeroaxis
 	plot "maxplot.dat"
+	
+	set terminal pdf
+	set output "total_collatz_sequence_value.pdf"
+	set title "Total Collatz Sequence Value"
+	set xlabel "n"
+	set ylabel "total value"
+	set zeroaxis
+	plot "totalplot.dat"
 END
 #here-doc for the histogram
 #SOURCE CITATION: help found from gnuplot > help histogram manual.
@@ -102,5 +134,5 @@ gnuplot <<END
 END
 
 # removing the unneccesary files
-rm testdata.dat && rm lengthplot.dat && rm histodata.dat && rm maxplot.dat && rm maxdata.dat && rm temp.dat && rm histoplot.dat
+rm testdata.dat && rm lengthplot.dat && rm histodata.dat && rm maxplot.dat && rm maxdata.dat && rm temp.dat && rm histoplot.dat && rm totaldata.dat && rm totalplot.dat
 
