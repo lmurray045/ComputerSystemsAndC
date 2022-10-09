@@ -148,27 +148,27 @@ double my_log(double x) {
 	double past_value;
 	int counter = 1;
 	do {
-		printf("iteration %d: starting value: %f\n", counter,
-		last_value);
 		double term1 = input - (my_ex(last_value));
 		double term2 = my_ex(last_value);
-		current = last_value - (term1 / term2);
+		current = last_value + (term1 / term2);
 		past_value = last_value;
 		last_value = current;
 		counter++;
 	}
-	while (my_abs(current - past_value)>EPSILON);	
+	while (my_abs(last_value - past_value)>EPSILON);
+	if (-0.0000000001 <= last_value && last_value <= 0.0000000001)
+		{last_value = my_abs(last_value);}
 	return last_value;
 }
 
-int main(void)
-{
-printf("log of %f is %lf \n",(0.5),my_log(0.5));
-printf("log of %f is %lf \n",(1.0),my_log(1.0));
-printf("log of %f is %lf \n",(2.5),my_log(2.5));
-printf("log of %f is %lf \n",(5.0),my_log(5.0));
-printf("log of %f is %lf \n",(7.5),my_log(7.5));
-printf("log of %f is %lf \n",(10.0),my_log(10.0));
-return 0;
-}
+//int main(void)
+//{
+//printf("log of %f is %lf \n",(0.5),my_log(0.5));
+//printf("log of %f is %lf \n",(1.0),my_log(1.0));
+//printf("log of %f is %lf \n",(2.5),my_log(2.5));
+//printf("log of %f is %lf \n",(5.0),my_log(5.0));
+//printf("log of %f is %lf \n",(7.5),my_log(7.5));
+//printf("log of %f is %lf \n",(10.0),my_log(10.0));
+//return 0;
+//}
 	
