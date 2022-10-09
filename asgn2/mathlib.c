@@ -21,11 +21,11 @@ int my_factorial(int num) {
 
 //Exponent Function
 
-int my_exponent(int base, int exponent){
-	int b_input = base;
-	int m_value = base;
-	int x_input = exponent;
-	while (x_input > 0){
+double my_exponent(double base, double exponent){
+	double b_input = base;
+	double m_value = base;
+	double x_input = exponent;
+	while (x_input > 1){
 		b_input = b_input * m_value;
 		x_input -= 1;
 	}
@@ -105,12 +105,49 @@ double my_arcsin(double x) {
 	return last_val;
 }
 
+// Arccos function
+// Lucky for me, arcsine and arccosine are very closely related. Therefore, I can implement arccosine as a manipulation of arcsine.
+double my_arccos(double x) {
+	double input = x;
+	return (M_PI / 2) - my_arcsin(input);
+}
+
+// Arctan function
+// uses arcsine and arccos to calculate arctan
+double my_arctan(double x) {
+	double input = x;
+	double term1 = my_sqrt(my_exponent(input, 2) + 1);
+	return my_arcsin((x / term1));
+}
+
+//e^x function
+//a fairly simple, recursive definition
+double my_ex(double x) {
+	double input = x;
+	long double EPSILON = 1e-10;
+	double starting_val = 1;
+	int counter = 1;
+	double new_value;
+	double running_total = 1;
+	do {
+		printf("iteration %d: starting value: %f\n", counter,
+		starting_val);
+		new_value = starting_val * (input / counter);
+		starting_val = new_value;
+		running_total += new_value;
+		counter++;
+	} 
+	while (my_abs(new_value / counter) > EPSILON);
+	return running_total;
+}
+
 int main(void)
 {
-printf("the arcsine of %f is %lf \n",(-1.0),my_arcsin(-1.0));
-printf("the arcsine of %f is %lf \n",(0.0),my_arcsin(0.0));
-printf("the arcsine of %f is %lf \n",(0.5),my_arcsin(0.5));
-printf("the arcsine of %f is %lf \n",(1.0),my_arcsin(1.0));
+printf("e to the %f is %lf \n",(1.0),my_ex(1.0));
+printf("e to the %f is %lf \n",(2.5),my_ex(2.5));
+printf("e to the %f is %lf \n",(-5.0),my_ex(-5.0));
+printf("e to the %f is %lf \n",(7.5),my_ex(7.5));
+printf("e to the %f is %lf \n",(-10.0),my_ex(-10.0));
 return 0;
 }
 	
