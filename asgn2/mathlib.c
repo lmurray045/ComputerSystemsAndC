@@ -55,14 +55,15 @@ double my_sqrt(double x) {
 
 //Sine Function
 double my_sine(double x) {
-	double last_entry = x;
-	long double running_total = x;
+	double num = my_abs(x);
+	double last_entry = num;
+	long double running_total = num;
 	long double EPSILON = 1e-10;
 	int counter_n = 1;
 	while (my_abs(last_entry) >= EPSILON) 
 		{
-		double term1 = x / (2.0 * counter_n);
-		double term2 = x / ((2.0 * counter_n) + 1);
+		double term1 = num / (2.0 * counter_n);
+		double term2 = num / ((2.0 * counter_n) + 1);
 		double current_val = (last_entry * term1) * term2;
 		current_val = my_abs(current_val);
 		if (counter_n % 2 == 1 | counter_n == 1) 
@@ -74,16 +75,29 @@ double my_sine(double x) {
 		running_total += current_val;
 		last_entry = current_val;
 		}
+	if (x < 0)
+		{running_total = -running_total;}
 	if (-0.0000000001 <= running_total && running_total <= 0.0000000001)
 		{running_total = my_abs(running_total);}
 	return running_total;
 }
 
+// Cosine Function
+// Cosine is actually just the sine function, with the inputted number being shifted via (pi/2 - x). Therefore, the more efficient implentation of cosine is simply a shifted over sine.
+double my_cosine(double x) {
+	double input = x;
+	input = (M_PI/2) - x;
+	return my_sine(input);
+}
+
 int main(void)
 {
-printf("the sine of %f is %lf \n",(M_PI/2),my_sine(M_PI/2));
-printf("the sine of %f is %lf \n",(M_PI),my_sine(M_PI));
-printf("the sine of %f is %lf \n",(0.0),my_sine(0.0));
+printf("the cosine of %f is %lf \n",(M_PI/2),my_cosine(M_PI/2));
+printf("the cosine of %f is %lf \n",(M_PI),my_cosine(M_PI));
+printf("the sine of %f is %lf \n",(-M_PI/2),my_sine(-M_PI/2));
+printf("the sine of %f is %lf \n",(M_PI/4),my_sine(M_PI/4));
+printf("the sine of %f is %lf \n",(-M_PI/4),my_sine(-M_PI/4));
+printf("the cosine of %f is %lf \n",(0.0),my_cosine(0.0));
 return 0;
 }
 	
