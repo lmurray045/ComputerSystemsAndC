@@ -54,7 +54,7 @@ double my_sqrt(double x) {
 }
 
 //Sine Function
-double my_sine(double x) {
+double my_sin(double x) {
 	double num = my_abs(x);
 	double last_entry = num;
 	long double running_total = num;
@@ -69,8 +69,6 @@ double my_sine(double x) {
 		if (counter_n % 2 == 1 | counter_n == 1) 
 			{current_val = -current_val;}
 		else {}
-		printf("iteration: %d, value: %lf\n", counter_n,
-			current_val);
 		counter_n++;
 		running_total += current_val;
 		last_entry = current_val;
@@ -84,20 +82,35 @@ double my_sine(double x) {
 
 // Cosine Function
 // Cosine is actually just the sine function, with the inputted number being shifted via (pi/2 - x). Therefore, the more efficient implentation of cosine is simply a shifted over sine.
-double my_cosine(double x) {
+double my_cos(double x) {
 	double input = x;
 	input = (M_PI/2) - x;
-	return my_sine(input);
+	return my_sin(input);
+}
+
+// Arcsine function
+double my_arcsin(double x) {
+	double input = x;
+	double last_val = input;
+	double EPSILON = 1e-10;
+	double prev;
+	double new_term;
+	do {
+		prev = last_val;
+		double term1 = my_sin(last_val) - x;
+		double term2 = my_cos(last_val);
+		new_term = last_val - (term1 / term2);
+		last_val = new_term;}
+	while (my_abs(new_term - prev) > EPSILON);
+	return last_val;
 }
 
 int main(void)
 {
-printf("the cosine of %f is %lf \n",(M_PI/2),my_cosine(M_PI/2));
-printf("the cosine of %f is %lf \n",(M_PI),my_cosine(M_PI));
-printf("the sine of %f is %lf \n",(-M_PI/2),my_sine(-M_PI/2));
-printf("the sine of %f is %lf \n",(M_PI/4),my_sine(M_PI/4));
-printf("the sine of %f is %lf \n",(-M_PI/4),my_sine(-M_PI/4));
-printf("the cosine of %f is %lf \n",(0.0),my_cosine(0.0));
+printf("the arcsine of %f is %lf \n",(-1.0),my_arcsin(-1.0));
+printf("the arcsine of %f is %lf \n",(0.0),my_arcsin(0.0));
+printf("the arcsine of %f is %lf \n",(0.5),my_arcsin(0.5));
+printf("the arcsine of %f is %lf \n",(1.0),my_arcsin(1.0));
 return 0;
 }
 	
