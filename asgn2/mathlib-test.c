@@ -131,6 +131,16 @@ int print_function(char f) {
  {
  	int opt = 0;
 while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
+	if (opt == 'a'){
+		print_function('s');
+		print_function('c');
+		print_function('S');
+		print_function('C');
+		print_function('T');
+		print_function('l');
+		break;
+	}
+
 	switch (opt) {
 	case 's':
  		print_function('s');
