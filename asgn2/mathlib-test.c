@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <math.h>
+#include <unistd.h> //for getopt()
+#define OPTIONS "scSCTla"
 #include "mathlib.h"
 
 
@@ -124,6 +126,39 @@ int print_function(char f) {
 	return 0;
 	
 }
- int main(void){
- 	print_function('l');
+//SOURCE CITATION: get opt instructions/example taken from assignment 2 instruction document
+ int main(int argc, char **argv)
+ {
+ 	int opt = 0;
+while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
+	switch (opt) {
+	case 's':
+ 		print_function('s');
+ 		break;
+ 	case 'c':
+ 		print_function('c');
+ 		break;
+	case 'C':
+ 		print_function('C');
+ 		break;
+	case 'S':
+ 		print_function('S');
+ 		break;
+	case 'T':
+ 		print_function('T');
+ 		break;
+	case 'l':
+ 		print_function('l');
+ 		break;
+	case 'a':
+		print_function('s');
+		print_function('c');
+		print_function('S');
+		print_function('C');
+		print_function('T');
+		print_function('l');
+		break;
+ 	}
+ 	}
+ return 0;
  }
