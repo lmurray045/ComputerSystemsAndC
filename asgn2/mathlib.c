@@ -2,7 +2,7 @@
 
 #include <math.h> //for constants such as pi
 #include <stdio.h>
-
+#include "mathlib.h"
 // lower level math functions for assistance computting more complex functions
 
 double EPSILON = 1e-10;
@@ -81,7 +81,7 @@ double my_sin(double x) {
 }
 
 // Cosine Function
-// Cosine is actually just the sine function, with the inputted number being shifted via (pi/2 - x). Therefore, the more efficient implentation of cosine is simply a shifted over sine.
+// Cosine is actually just the sine function, with the inputted number being shifted via (pi/2 - x). Therefore, the more efficient implentation of cosine is simply a shifted over sine. The idea for this post came from a comic that professor miller posted on piazza, in which a student shouts a her professor about how "cosine is just sine shifted over"
 double my_cos(double x) {
 	double input = x;
 	input = (M_PI/2) - x;
@@ -89,6 +89,7 @@ double my_cos(double x) {
 }
 
 // Arcsine function
+// This uses the taylor series of arcsine to calculate it very accurately.
 double my_arcsin(double x) {
 	double input = x;
 	double last_val = input;
@@ -140,6 +141,7 @@ double my_ex(double x) {
 }
 
 //log function
+//uses the newton-raphson method to calculate the approximation of the ln() function
 double my_log(double x) {
 	double input = x;
 	double EPSILON = 1e-10;
@@ -160,15 +162,4 @@ double my_log(double x) {
 		{last_value = my_abs(last_value);}
 	return last_value;
 }
-
-//int main(void)
-//{
-//printf("log of %f is %lf \n",(0.5),my_log(0.5));
-//printf("log of %f is %lf \n",(1.0),my_log(1.0));
-//printf("log of %f is %lf \n",(2.5),my_log(2.5));
-//printf("log of %f is %lf \n",(5.0),my_log(5.0));
-//printf("log of %f is %lf \n",(7.5),my_log(7.5));
-//printf("log of %f is %lf \n",(10.0),my_log(10.0));
-//return 0;
-//}
 	

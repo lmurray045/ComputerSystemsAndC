@@ -1,16 +1,36 @@
-CC = clang
-CFLAGS = -Wall -Wpedantic -Werror -Wextra
+# Name of the program this Makefile is going to build
+EXECBIN  = mathlib-test
 
-all: collatz 
+# Default values for compiling C files
+CC       = clang
+CFLAGS   = -Wall -Wpedantic -Werror -Wextra
+LIBFLAGS = -lm
 
-collatz: collatz.o
-	$(CC) -o collatz collatz.o
+# All available .c files are included as SOURCES
+SOURCES  = $(wildcard *.c)
+# Each .c file has a corresponding .o file
+OBJECTS  = $(SOURCES:%.c=%.o)
 
-collatz.o: collatz.c
-	$(CC) $(CFLAGS) -c collatz.c
-	
+# These are "phony" targets: they're not real files
+.PHONY: all clean
+
+# This is the first actual target in the file.
+# That means it's built when 'make' is run without arguments.
+all: $(EXECBIN)
+
+# The program depends on *all* of the OBJECTS.
+# This means the .o files from *every* .c file in the directory,
+# given how we defined $(OBJECTS)
+$(EXECBIN): $(OBJECTS)
+	$(CC) -o $@ $^ $(LIBFLAGS)
+
+# This rule removes the derived files: the executable itself and
+# all of the OBJECT files that it can build.
+# They can be recreated by running 'make all'.
 clean:
-	rm -f collatz *.o *.pdf
+	rm -f $(EXECBIN) $(OBJECTS)
 
-format:
-	clang-format -i -style=file *.{c,h}
+# This is a default rule for creating a .o file from the corresponding .c file.
+%.o : %.c
+	$(CC) $(CFLAGS) -c $<
+
