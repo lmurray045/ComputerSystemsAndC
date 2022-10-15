@@ -40,27 +40,33 @@ int play_dreidel(int num_players, int num_coins, int *rounds, int print){
 		printf("player id = %d \n", player_id);
 		printf("player coins = %d \n", coin_array[player_id]);
 		if(coin_array[player_id] < 0){
-			printf("skipped player %d\n", player_id);
 			counter++;
 			continue;
 			}
 		char roll = spin_dreidel();
+		printf("pot: %d\n", pot);
 		switch (roll){
 		case 'G': //player takes pot
 			coin_array[player_id] += pot;
 			pot = 0;
+			printf("player %d got G, new coins: %d\n", player_id, coin_array[player_id]);
 			break;
 		case 'H': //player takes half pot
 			coin_array[player_id] += (pot/2);
-			pot = 0;
+			if(pot % 2 == 0){
+				pot = (pot / 2);}
+			else{
+				pot = (pot / 2) + 1;}
+			printf("player %d got H, new coins: %d\n", player_id, coin_array[player_id]);
 			break;
 		case 'N': //player skips
+			printf("player %d got N\n", player_id);
 			break;
 		case 'S': //player loses coin to pot
+			printf("player %d got S, new coins: %d\n", player_id, (coin_array[player_id]-1));
 			if (coin_array[player_id] == 0){
 				coin_array[player_id] = -1;
 				players -= 1;
-				printf("players left: %d\n", players);
 				if (message == 1){
 				printf("TO DO: player elim message\n");
 				}
