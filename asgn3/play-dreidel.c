@@ -2,6 +2,7 @@
 #include "dreidel.h" //for dreidel functions
 #include "mtrand.h" //for RNG machine
 #include <unistd.h> //for getopt()
+#include <stdlib.h> //for atoi()
 #define OPTIONS "p:c:s:v"
 
 
@@ -16,13 +17,14 @@ int main(int argc, char **argv) {
 	while ((opt = getopt(argc, argv, OPTIONS)) != -1){
 		switch(opt){
 			case 'p':
-				p = *optarg;
+				//SOURCE: atoi(var) command taken from optarg manual, first example
+				p = atoi(optarg);
 				break;
 			case 'c':
-				c = *optarg;
+				c = atoi(optarg);
 				break;
 			case 's':
-				s = *optarg;
+				s = atoi(optarg);
 				break;
 			case 'v':
 				v = 1;
