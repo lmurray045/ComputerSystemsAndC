@@ -31,25 +31,28 @@ int play_dreidel(int num_players, int num_coins, int *rounds, int print){
 	int counter = num_players;
 	int coin_array[] = {0,0,0,0,0,0,0,0,0};
 	int player_counter = 0;
+	int round_counter = 0;
 	while (player_counter < players){
 		coin_array[player_counter] = coins;
 		player_counter++;
 		}
 	do{
 		int player_id = (counter % num_players);
-		printf("player id = %d \n", player_id);
-		printf("player coins = %d \n", coin_array[player_id]);
+		if(player_id == 0){
+			round_counter += 1;}
+		//printf("player id = %d \n", player_id);
+		//printf("player coins = %d \n", coin_array[player_id]);
 		if(coin_array[player_id] < 0){
 			counter++;
 			continue;
 			}
 		char roll = spin_dreidel();
-		printf("pot: %d\n", pot);
+		//printf("pot: %d\n", pot);
 		switch (roll){
 		case 'G': //player takes pot
 			coin_array[player_id] += pot;
 			pot = 0;
-			printf("player %d got G, new coins: %d\n", player_id, coin_array[player_id]);
+			//printf("player %d got G, new coins: %d\n", player_id, coin_array[player_id]);
 			break;
 		case 'H': //player takes half pot
 			coin_array[player_id] += (pot/2);
@@ -57,13 +60,13 @@ int play_dreidel(int num_players, int num_coins, int *rounds, int print){
 				pot = (pot / 2);}
 			else{
 				pot = (pot / 2) + 1;}
-			printf("player %d got H, new coins: %d\n", player_id, coin_array[player_id]);
+			//printf("player %d got H, new coins: %d\n", player_id, coin_array[player_id]);
 			break;
 		case 'N': //player skips
-			printf("player %d got N\n", player_id);
+			//printf("player %d got N\n", player_id);
 			break;
 		case 'S': //player loses coin to pot
-			printf("player %d got S, new coins: %d\n", player_id, (coin_array[player_id]-1));
+			//printf("player %d got S, new coins: %d\n", player_id, (coin_array[player_id]-1));
 			if (coin_array[player_id] == 0){
 				coin_array[player_id] = -1;
 				players -= 1;
@@ -79,7 +82,7 @@ int play_dreidel(int num_players, int num_coins, int *rounds, int print){
 				}
 			}
 		counter += 1;
-		printf("players remaining: %d\n", players);
+		//printf("players remaining: %d\n", players);
 		}
 		while (players > 1);
 	printf("exited while loop\n");
@@ -95,16 +98,15 @@ int play_dreidel(int num_players, int num_coins, int *rounds, int print){
 			player_counter += 1;
 			}
 		}
-	*rounds = counter;
+	*rounds = round_counter;
 	return winner;
 	}
 
 int main(void) {
-	mtrand_seed(613);
+	mtrand_seed(800);
 	int x = 0;
 	int *b = &x;
-	printf("dreidel roll: %c\n", spin_dreidel());
-	printf("%d, %d\n", play_dreidel(8,10,b,1), x);
+	printf("%d, %d\n", play_dreidel(4,3,b,1), x);
 	}
 
 
