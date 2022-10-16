@@ -19,12 +19,21 @@ int main(int argc, char **argv) {
 			case 'p':
 				//SOURCE: atoi(var) command taken from optarg manual, first example
 				p = atoi(optarg);
+				if (p < 2 || p > 8) {
+					return 1;
+				}
 				break;
 			case 'c':
 				c = atoi(optarg);
+				if (c < 1 || c > 20) {
+					return 1;
+				}
 				break;
 			case 's':
-				s = atoi(optarg);
+				s = strtoul(optarg,NULL,10);
+				if (s < 1 || s > 9999999999) {
+					return 1;
+				}
 				break;
 			case 'v':
 				v = 1;
@@ -36,5 +45,5 @@ int main(int argc, char **argv) {
 	int *b = &rounds;
 	int dg = play_dreidel(p, c, b, v);
 	printf("%s %d %d %d %lu\n", (names[dg]), p, c, rounds, s);
-	
+	return 0;
 }

@@ -3,17 +3,14 @@
 #include "mtrand.h" // for random number generator
 // game logic for simulated games of dreidel
 
-
-
-//name array
-//char * names[] = {"Aharon",
-	//"Batsheva",
-	//"Chanah",
-	//"David",
-	//"Ephraim",
-	//"Faige",
-	//"Gamaleil",
-	//"Hannah"};
+char * gamers[] = {"Aharon",
+	"Batsheva",
+	"Chanah",
+	"David",
+	"Ephraim",
+	"Faige",
+	"Gamaleil",
+	"Hannah"};
 
 //spin dreidel
 char spin_dreidel(void){
@@ -40,19 +37,15 @@ int play_dreidel(int num_players, int num_coins, int *rounds, int print){
 		int player_id = (counter % num_players);
 		if(player_id == 0){
 			round_counter += 1;}
-		//printf("player id = %d \n", player_id);
-		//printf("player coins = %d \n", coin_array[player_id]);
 		if(coin_array[player_id] < 0){
 			counter++;
 			continue;
 			}
 		char roll = spin_dreidel();
-		//printf("pot: %d\n", pot);
 		switch (roll){
 		case 'G': //player takes pot
 			coin_array[player_id] += pot;
 			pot = 0;
-			//printf("player %d got G, new coins: %d\n", player_id, coin_array[player_id]);
 			break;
 		case 'H': //player takes half pot
 			coin_array[player_id] += (pot/2);
@@ -60,18 +53,15 @@ int play_dreidel(int num_players, int num_coins, int *rounds, int print){
 				pot = (pot / 2);}
 			else{
 				pot = (pot / 2) + 1;}
-			//printf("player %d got H, new coins: %d\n", player_id, coin_array[player_id]);
 			break;
 		case 'N': //player skips
-			//printf("player %d got N\n", player_id);
 			break;
 		case 'S': //player loses coin to pot
-			//printf("player %d got S, new coins: %d\n", player_id, (coin_array[player_id]-1));
 			if (coin_array[player_id] == 0){
 				coin_array[player_id] = -1;
 				players -= 1;
 				if (message == 1){
-				printf("TO DO: player elim message\n");
+				printf("%s: eliminated in round %d of a %d player game.\n", gamers[player_id], round_counter, num_players);
 				}
 				break;
 				}
@@ -82,7 +72,6 @@ int play_dreidel(int num_players, int num_coins, int *rounds, int print){
 				}
 			}
 		counter += 1;
-		//printf("players remaining: %d\n", players);
 		}
 		while (players > 1);
 	int winner = 0;
