@@ -6,14 +6,14 @@
 
 
 //name array
-char * names[] = {"Aharon",
-	"Batsheva",
-	"Chanah",
-	"David",
-	"Ephraim",
-	"Faige",
-	"Gamaleil",
-	"Hannah"};
+//char * names[] = {"Aharon",
+	//"Batsheva",
+	//"Chanah",
+	//"David",
+	//"Ephraim",
+	//"Faige",
+	//"Gamaleil",
+	//"Hannah"};
 
 //spin dreidel
 char spin_dreidel(void){
@@ -85,11 +85,9 @@ int play_dreidel(int num_players, int num_coins, int *rounds, int print){
 		//printf("players remaining: %d\n", players);
 		}
 		while (players > 1);
-	printf("exited while loop\n");
 	int winner = 0;
 	player_counter = 0;
 	while (player_counter < num_players){
-		printf("player number: %d player coins: %d\n",player_counter, coin_array[player_counter]);
 		if (coin_array[player_counter] > 0){
 			winner = player_counter;
 			break;
@@ -100,13 +98,6 @@ int play_dreidel(int num_players, int num_coins, int *rounds, int print){
 		}
 	*rounds = round_counter;
 	return winner;
-	}
-
-int main(void) {
-	mtrand_seed(800);
-	int x = 0;
-	int *b = &x;
-	printf("%d, %d\n", play_dreidel(4,3,b,1), x);
 	}
 
 
