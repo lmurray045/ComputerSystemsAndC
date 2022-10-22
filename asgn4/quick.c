@@ -4,19 +4,16 @@
 //quick_sort algorithm
 int iteration = 1;
 
-int quick_sort(uint32_t *arr, uint32_t n_elements)
+void quick_sort(uint32_t *arr, uint32_t n_elements)
 {
-	uint32_t SMALL = 2;
 	uint32_t length = n_elements-1;
-	if(length <= SMALL)
+	uint32_t SMALL = 2;
+	if((length+1) <= SMALL)
 		{
-		shell_sort(arr,length);
-		return 0;
+		printf("shell sorted\n");
+		bubble_sort(arr,n_elements);
+		return;
 		}
-	uint32_t pivot = *(arr+(n_elements / 2));
-	printf("pivot %u\n", pivot);
-	//printf("range: %ld - %u\n",arr, length);
-	int counter = length;
 	uint32_t h = 0;
 	printf("working array: ");
 	while(h <= length)
@@ -25,7 +22,11 @@ int quick_sort(uint32_t *arr, uint32_t n_elements)
 		h++;
 		}
 	printf("\n");
-	uint32_t pivot_addr = (length / 2) + 1;
+	uint32_t pivot = *(arr+(n_elements / 2));
+	printf("pivot %u\n", pivot);
+	//printf("range: %ld - %u\n",arr, length);
+	int counter = length;
+	uint32_t pivot_addr = (n_elements / 2);
 	while(counter!=0)
 		{
 		counter--;
@@ -35,7 +36,7 @@ int quick_sort(uint32_t *arr, uint32_t n_elements)
 		int r_change = 0;
 		uint32_t swapped = 0;
 		printf("arr + pivot_addr: %d\n",*(arr+(pivot_addr)));
-		for(uint32_t l = 0; l != (pivot_addr -1); l++)
+		for(uint32_t l = 0; l != (pivot_addr); l++)
 			{
 			printf("left value: %d\n", *(arr+l));
 			if(*(arr+l)>=pivot)
@@ -86,12 +87,13 @@ int quick_sort(uint32_t *arr, uint32_t n_elements)
 	printf("\n");
 	printf("iteration: %d\n", iteration);
 	iteration++;
-	printf("left:\n");
-	quick_sort(arr, (pivot_addr+1));
-	printf("right:\n");
-	quick_sort((arr+ pivot_addr), (pivot_addr+1));
+	printf("left: %d\n",iteration);
+	quick_sort(arr, (pivot_addr));
+	printf("right: %d\n",iteration);
+	quick_sort((arr+pivot_addr+1), ((n_elements-pivot_addr-1)));
+	
 
-	return 0;
+	return;
 }
 
 int main()
