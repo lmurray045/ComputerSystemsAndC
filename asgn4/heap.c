@@ -1,6 +1,7 @@
 #include <stdio.h> //for printf
 #include <stdint.h> // for uint32_t
 #include <stdlib.h> //for calloc
+#include "stats.h"
 
 //left child
 uint32_t left_child(uint32_t addr)
@@ -21,20 +22,18 @@ uint32_t parent(uint32_t addr)
 	}
 
 //up heap
-void up_heap(uint32_t *arr, uint32_t element)
+void up_heap(Stats *stats, uint32_t *arr, uint32_t element)
 	{
 	uint32_t n = element;
-	while(n > 0 && *(arr+n) < *(arr + (parent(n))))
+	while( n > 0 && (cmp(stats,*(arr+n),*( arr + parent(n) )) == -1) )
 		{
-		uint32_t temp = *(arr+n);
-		*(arr+n) = *(arr + (parent(n)));
-		*(arr + (parent(n))) = temp;
+		swap(stats,(arr+n),(arr + (parent(n))));
 		n = parent(n);
 		}
 	}
 
 //down heap
-void down_heap(uint32_t *arr, uint32_t elements)
+void down_heap(Stats *stats, uint32_t *arr, uint32_t elements)
 	{
 	uint32_t n = 0;
 	uint32_t smaller;
@@ -46,7 +45,7 @@ void down_heap(uint32_t *arr, uint32_t elements)
 			}
 		else
 			{
-			if(*(arr+left_child(n)) < *(arr+right_child(n)))
+			if(cmp(stats,*(arr+left_child(n)), *(arr+right_child(n)))==-1)
 				{
 				smaller = left_child(n);
 				}
@@ -55,41 +54,42 @@ void down_heap(uint32_t *arr, uint32_t elements)
 				smaller = right_child(n);
 				}
 			}
-		if(*(arr+n) < *(arr+smaller))
+		if(cmp(stats, *(arr+n), *(arr+smaller))==-1)
 			{
 			break;
 			}
-		uint32_t temp = *(arr+n);
-		*(arr+n) = *(arr + smaller);
-		*(arr + smaller) = temp;
+		swap(stats, (arr+n), (arr+smaller));
 		n = smaller;
 		}
 	return;
 	}
 
 //build heap
-void build_heap(uint32_t *arr, uint32_t n_elements)
+void build_heap(Stats *stats, uint32_t *arr, uint32_t n_elements)
 	{
 	for(uint32_t n = 0; n < n_elements; n++)
 		{
-		up_heap(arr, n);
+		up_heap(stats, arr, n);
 		}
 	}
 
 //heap sort
-void heap_sort(uint32_t *arr, uint32_t elements)
+void heap_sort(Stats *stats, uint32_t *arr, uint32_t elements)
 {
 	uint32_t* copy = (uint32_t*)calloc(elements, sizeof(uint32_t));
 	for(uint32_t c = 0;c < elements;c++)
 		{
+		move(stats, *(copy+c));
 		*(copy+c) = *(arr+c);
 		}
-	build_heap(copy, elements);
+	build_heap(stats, copy, elements);
 	for(uint32_t n = 0; n < elements; n++)
 		{
+		move(stats, *(arr+n));
 		*(arr+n) = *(copy);
+		move(stats, *(copy));
 		*(copy) = *(copy+(elements-n-1));
-		down_heap(copy, (elements-n));
+		down_heap(stats, copy, (elements-n));
 		}
 	free(copy);
 	return;
@@ -97,10 +97,12 @@ void heap_sort(uint32_t *arr, uint32_t elements)
 
 int main()
 {
+	Stats start = { 0, 0 };
+	Stats *sts = &start;
 	uint32_t test_array[] = {5, 8, 6, 100, 2, 3, 4, 55, 44, 3};
 	uint32_t *p;
 	p = &test_array[0];
-	heap_sort(p, 10);
+	heap_sort(sts, p, 10);
 	int c = 0;
 	while(c <= 9){
 		printf("heap: %d\n",test_array[c]);
