@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 		int run_var = q_arg + b_arg + s_arg + h_arg;
 		for(uint32_t counter=0; counter < n_arg; counter++)
 			{
-			*(arr+counter) = (mtrand_rand64() & 2147483647);
+			*(arr+counter) = (mtrand_rand64() & 1073741823); //2147483647);
 			}
 		
 		for(;run_var>0;run_var--) 
@@ -173,5 +173,6 @@ int main(int argc, char **argv)
 				h_arg = 0;
 				}
 				}
+		free(arr);
 }			
 
