@@ -95,18 +95,3 @@ void heap_sort(Stats *stats, uint32_t *arr, uint32_t elements)
 	return;
 }
 
-int main()
-{
-	Stats start = { 0, 0 };
-	Stats *sts = &start;
-	uint32_t test_array[] = {5, 8, 6, 100, 2, 3, 4, 55, 44, 3};
-	uint32_t *p;
-	p = &test_array[0];
-	heap_sort(sts, p, 10);
-	int c = 0;
-	while(c <= 9){
-		printf("heap: %d\n",test_array[c]);
-		c++;
-	}
-	return 0;
-}

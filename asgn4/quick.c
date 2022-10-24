@@ -1,6 +1,7 @@
 #include <stdio.h> //for printf
 #include <stdlib.h> //atoi
 #include "shell.h" //for shell_sort
+#include "stats.h" //for stats
 //quick_sort algorithm
 int iteration = 1;
 
@@ -70,18 +71,3 @@ void quick_sort(Stats *stats, uint32_t *arr, uint32_t n_elements)
 	return;
 }
 
-int main(){
-	Stats start = { 0,0 };
-	Stats *sts = &start;
-	uint32_t test_array[] = {5, 3, 6, 9, 2, 13, 4, 22, 44, 1};
-	uint32_t *p;
-	p = &test_array[0];
-	quick_sort(sts, p, 10);
-	printf("moves: %lu\ncompares: %lu\n", start.moves, start.compares);
-	uint32_t c = 0;
-	while(c <= 9){
-		printf("%d\n",test_array[c]);
-		c++;
-	}
-	return 0;
-}
