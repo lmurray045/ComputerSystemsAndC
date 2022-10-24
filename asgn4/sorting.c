@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 {	
 	getopt(argc, argv, OPTIONS);
 	//int a_arg = 0;
-	int b_arg = 1;
+	int b_arg = 0;
 	int s_arg = 0;
 	int q_arg = 0;
 	int h_arg = 0;
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 		int run_var = q_arg + b_arg + s_arg + h_arg;
 		for(uint32_t counter=0; counter < n_arg; counter++)
 			{
-			*(arr+counter) = (mtrand_rand64() & 1073741823); //2147483647);
+			*(arr+counter) = (mtrand_rand64() & 1073741823);
 			}
 		
 		for(;run_var>0;run_var--) 
