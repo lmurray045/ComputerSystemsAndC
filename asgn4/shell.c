@@ -38,6 +38,7 @@ void shell_sort(Stats *stats, uint32_t *arr, uint32_t n_elements){
 			uint32_t temp = move(stats, *(arr+i));
 			while(j >= gap && cmp(stats,temp,*(arr + (j-gap)))==-1)
 				{
+				move(stats, 1);
 				*(arr+j) = move(stats, *(arr+(j-gap)));
 				j -= gap;
 				}

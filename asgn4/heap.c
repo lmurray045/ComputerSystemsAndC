@@ -79,7 +79,6 @@ void heap_sort(Stats *stats, uint32_t *arr, uint32_t elements)
 	uint32_t* copy = (uint32_t*)calloc(elements, sizeof(uint32_t));
 	for(uint32_t c = 0;c < elements;c++)
 		{
-		move(stats, *(copy+c));
 		*(copy+c) = *(arr+c);
 		}
 	build_heap(stats, copy, elements);
@@ -89,6 +88,7 @@ void heap_sort(Stats *stats, uint32_t *arr, uint32_t elements)
 		*(arr+n) = *(copy);
 		move(stats, *(copy));
 		*(copy) = *(copy+(elements-n-1));
+		move(stats, *(copy+(elements-n-1)));
 		down_heap(stats, copy, (elements-n));
 		}
 	free(copy);

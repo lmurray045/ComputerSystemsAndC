@@ -89,19 +89,24 @@ int main(int argc, char **argv)
 			}
 		mtrand_seed(r_set);
 		uint32_t* arr = (uint32_t*)calloc(n_set, sizeof(uint32_t));
-		int run_var = q_set + b_set + s_set + h_set;
+		uint32_t* copy = (uint32_t*)calloc(n_set, sizeof(uint32_t));
 		for(uint32_t counter=0; counter < n_set; counter++)
 			{
 			*(arr+counter) = (mtrand_rand64() & 1073741823);
 			}
-		
+		int run_var = q_set + b_set + s_set + h_set;
 		for(;run_var>0;run_var--) 
 			{
+			for(uint32_t counter2=0; counter2 < n_set; counter2++)
+				{
+				*(copy+counter2) = *(arr+counter2);
+				}
 			Stats start = { 0, 0 };
 			Stats *sts = &start;
+			
 			if(q_set > 0)
 				{
-				quick_sort(sts, arr, n_set);
+				quick_sort(sts, copy, n_set);
 				printf("Quick Sort, %u elements, %lu moves, %lu compares\n", n_set, start.moves, start.compares);
 				uint32_t c = 1;
 				while(c <= p_set)
@@ -110,7 +115,7 @@ int main(int argc, char **argv)
 						{
 						break;
 						}
-					printf("%13" PRIu32, *(arr+c-1));
+					printf("%13" PRIu32, *(copy+c-1));
 					if(c%5 == 0)
 						{
 						printf("\n");
@@ -122,7 +127,7 @@ int main(int argc, char **argv)
 				}
 			else if(b_set == 1)
 				{
-				bubble_sort(sts, arr, n_set);
+				bubble_sort(sts, copy, n_set);
 				printf("Bubble Sort, %u elements, %lu moves, %lu compares\n", n_set, start.moves, start.compares);
 				uint32_t c = 1;
 				while(c <= p_set)
@@ -131,7 +136,7 @@ int main(int argc, char **argv)
 						{
 						break;
 						}
-					printf("%13" PRIu32, *(arr+c-1));
+					printf("%13" PRIu32, *(copy+c-1));
 					if(c%5 == 0)
 						{
 						printf("\n");
@@ -144,7 +149,7 @@ int main(int argc, char **argv)
 			else if(s_set == 1)
 				{
 				
-				shell_sort(sts, arr, n_set);
+				shell_sort(sts, copy, n_set);
 				printf("Shell Sort, %u elements, %lu moves, %lu compares\n", n_set, start.moves, start.compares);
 				uint32_t c = 1;
 				while(c <= p_set)
@@ -153,7 +158,7 @@ int main(int argc, char **argv)
 						{
 						break;
 						}
-					printf("%13" PRIu32, *(arr+c-1));
+					printf("%13" PRIu32, *(copy+c-1));
 					if(c%5 == 0)
 						{
 						printf("\n");
@@ -165,7 +170,7 @@ int main(int argc, char **argv)
 				}
 			else if(h_set == 1)
 				{
-				heap_sort(sts, arr, n_set);
+				heap_sort(sts, copy, n_set);
 				printf("Heap Sort, %u elements, %lu moves, %lu compares\n", n_set, start.moves, start.compares);
 				uint32_t c = 1;
 				while(c <= p_set)
@@ -174,7 +179,7 @@ int main(int argc, char **argv)
 						{
 						break;
 						}
-					printf("%13" PRIu32, *(arr+c-1));
+					printf("%13" PRIu32, *(copy+c-1));
 					if(c%5 == 0)
 						{
 						printf("\n");
@@ -186,6 +191,7 @@ int main(int argc, char **argv)
 				}
 				}
 		free(arr);
+		free(copy);
 		return 0;
 }			
 
