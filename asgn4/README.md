@@ -11,9 +11,9 @@
 
 ### Purpose and Usage
 
-The purpose of the the included programs is test different sorting algorithms
+The purpose of the the program is test different sorting algorithms
 with randomized inputs, and compare them using generated statistics about
-the comparisons and swaps performed throughout the sorting proccess.
+the comparisons and swaps performed throughout the sorting process.
 
 In order to use the program, navigate to the appropriate directory, and run
 either "make", "make sorting", or "make all". After the executable is created,
