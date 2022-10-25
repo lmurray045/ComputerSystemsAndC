@@ -14,88 +14,83 @@
 
 int main(int argc, char **argv)
 {	
-	getopt(argc, argv, OPTIONS);
-	//int a_arg = 0;
-	int b_arg = 0;
-	int s_arg = 0;
-	int q_arg = 0;
-	int h_arg = 0;
-	uint64_t r_arg = 13371453;
-	uint32_t n_arg = 20;
-	uint32_t p_arg = 20;
-	//int H_arg = 0;
-	uint32_t r_num = 0;
-	uint32_t n_num = 0;
-	uint32_t p_num = 0;
-	uint32_t set = set_empty();
+	Set b_set = set_empty();
+	Set s_set = set_empty();
+	Set q_set = set_empty();
+	Set h_set = set_empty();
+	Set r_set = set_empty(); 
+	Set a_set = set_empty();
+	r_set = r_set | 13371453;
+	Set n_set = set_empty();
+	n_set = n_set | 100;
+	Set p_set = set_empty();
+	p_set = p_set | 100;
+	Set H_set = set_empty();
+
 	for(int c = 0; c < (argc-1); c++)
 		{
-		set_insert(set, **(argv+c));
-		if(**(argv+c)=='r')
+		int opt = getopt(argc, argv, OPTIONS);
+		if(opt=='b')
 			{
-			r_num = strtoul(optarg, NULL, 10);
+			b_set = b_set | 1;
 			}
-		if(**(argv+c)=='n')
+		if(opt=='q')
 			{
-			n_num = strtoul(optarg, NULL, 10);
+			q_set = q_set | 1;
 			}
-		if(**(argv+c)=='p')
+		if(opt=='s')
 			{
-			p_num = strtoul(optarg, NULL, 10);
+			s_set = s_set | 1;
+			}
+		if(opt=='h')
+			{
+			h_set = h_set | 1;
+			}
+		if(opt=='H')
+			{
+			H_set = H_set | 1;
+			}
+		if(opt=='r')
+			{
+			r_set = set_empty();
+			r_set = r_set | strtoul(optarg,NULL,10);
+			c++;
+			}
+		if(opt=='n')
+			{
+			n_set = set_empty();
+			n_set = n_set | strtoul(optarg, NULL, 10);
+			c++;
+			}
+		if(opt=='p')
+			{
+			p_set = set_empty();
+			p_set = p_set | strtoul(optarg, NULL, 10);
+			c++;
+			}
+		if(opt == 'a')
+			{
+			a_set = a_set | 1;
 			}
 		}
-	for(int counter = 1; counter!= argc; counter++)
-		{
-		if(set_member('b',set) == true)
+		if(H_set == 1)
 			{
-			b_arg = 1;
-			set_remove('b', set);
+			printf("SYNOPSIS\n   A collection of comparison-based sorting algorithms.\n\nUSAGE\n   ./sorting [-Hasbhq] [-n length] [-p elements] [-r seed]\nOPTIONS\n   -H              Display program help and usage.\n   -a              Enable all sorts.\n   -b              Enable Bubble Sort.\n   -h              Enable Heap Sort.\n   -q              Enable Quick Sort.\n   -s              Enable Shell Sort.\n   -n length       Specify number of array elements (default: 100).\n   -p elements     Specify number of elements to print (default: 100).\n   -r seed         Specify random seed (default: 13371453).\n");
+			H_set = set_empty();
+			return 0;
 			}
-		if(set_member('s',set) == true)
+		if(a_set == 1)
 			{
-			s_arg = 1;
-			set_remove('s', set);
+			b_set = b_set | 1;
+			q_set = q_set | 1;
+			s_set = s_set | 1;
+			h_set = h_set | 1;
+			a_set = set_empty();
 			}
-		if(set_member('q',set) == true)
-			{
-			q_arg = 1;
-			set_remove('q', set);
-			}
-		if(set_member('h',set) == true)
-			{
-			h_arg = 1;
-			set_remove('h', set);
-			}
-		if(set_member('r',set) == true)
-			{
-			r_arg = r_num;
-			set_remove('r', set);
-			}
-		if(set_member('n',set) == true)
-			{
-			n_arg = n_num;
-			set_remove('n', set);
-			}
-		if(set_member('p',set) == true)
-			{
-			p_arg = p_num;
-			set_remove('p', set);
-			}
-		//if(set_member('H',set) == true)
-			//{
-			//H_arg = 1;
-			//set_remove('H', set);
-			//}
-		//if(set_member('a',set) == true)
-			//{
-			//a_arg = 1;
-			//set_remove('a', set);
-			//}
-		}
-		mtrand_seed(r_arg);
-		uint32_t* arr = (uint32_t*)calloc(n_arg, sizeof(uint32_t));
-		int run_var = q_arg + b_arg + s_arg + h_arg;
-		for(uint32_t counter=0; counter < n_arg; counter++)
+		mtrand_seed(r_set);
+		uint32_t* arr = (uint32_t*)calloc(n_set, sizeof(uint32_t));
+		int run_var = q_set + b_set + s_set + h_set;
+		for(uint32_t counter=0; counter < n_set; counter++)
 			{
 			*(arr+counter) = (mtrand_rand64() & 1073741823);
 			}
@@ -104,13 +99,17 @@ int main(int argc, char **argv)
 			{
 			Stats start = { 0, 0 };
 			Stats *sts = &start;
-			if(q_arg == 1)
+			if(q_set > 0)
 				{
-				quick_sort(sts, arr, n_arg);
-				printf("Quick Sort, %u elements, %lu moves, %lu compares\n", n_arg, start.moves, start.compares);
+				quick_sort(sts, arr, n_set);
+				printf("Quick Sort, %u elements, %lu moves, %lu compares\n", n_set, start.moves, start.compares);
 				uint32_t c = 1;
-				while(c <= p_arg)
+				while(c <= p_set)
 					{
+					if(c == n_set+1)
+						{
+						break;
+						}
 					printf("%13" PRIu32, *(arr+c-1));
 					if(c%5 == 0)
 						{
@@ -119,15 +118,19 @@ int main(int argc, char **argv)
 					c++;
 					}
 				printf("\n");
-				q_arg = 0;
+				q_set = set_empty();
 				}
-			else if(b_arg == 1)
+			else if(b_set == 1)
 				{
-				bubble_sort(sts, arr, n_arg);
-				printf("Bubble Sort, %u elements, %lu moves, %lu compares\n", n_arg, start.moves, start.compares);
+				bubble_sort(sts, arr, n_set);
+				printf("Bubble Sort, %u elements, %lu moves, %lu compares\n", n_set, start.moves, start.compares);
 				uint32_t c = 1;
-				while(c <= p_arg)
+				while(c <= p_set)
 					{
+					if(c == n_set+1)
+						{
+						break;
+						}
 					printf("%13" PRIu32, *(arr+c-1));
 					if(c%5 == 0)
 						{
@@ -136,15 +139,20 @@ int main(int argc, char **argv)
 					c++;
 					}
 				printf("\n");
-				b_arg = 0;
+				b_set = set_empty();
 				}
-			else if(s_arg == 1)
+			else if(s_set == 1)
 				{
-				shell_sort(sts, arr, n_arg);
-				printf("Shell Sort, %u elements, %lu moves, %lu compares\n", n_arg, start.moves, start.compares);
+				
+				shell_sort(sts, arr, n_set);
+				printf("Shell Sort, %u elements, %lu moves, %lu compares\n", n_set, start.moves, start.compares);
 				uint32_t c = 1;
-				while(c <= p_arg)
+				while(c <= p_set)
 					{
+					if(c == n_set+1)
+						{
+						break;
+						}
 					printf("%13" PRIu32, *(arr+c-1));
 					if(c%5 == 0)
 						{
@@ -153,15 +161,19 @@ int main(int argc, char **argv)
 					c++;
 					}
 				printf("\n");
-				s_arg = 0;
+				s_set = set_empty();
 				}
-			else if(h_arg == 1)
+			else if(h_set == 1)
 				{
-				heap_sort(sts, arr, n_arg);
-				printf("Heap Sort, %u elements, %lu moves, %lu compares\n", n_arg, start.moves, start.compares);
+				heap_sort(sts, arr, n_set);
+				printf("Heap Sort, %u elements, %lu moves, %lu compares\n", n_set, start.moves, start.compares);
 				uint32_t c = 1;
-				while(c <= p_arg)
+				while(c <= p_set)
 					{
+					if(c == n_set+1)
+						{
+						break;
+						}
 					printf("%13" PRIu32, *(arr+c-1));
 					if(c%5 == 0)
 						{
@@ -170,9 +182,10 @@ int main(int argc, char **argv)
 					c++;
 					}
 				printf("\n");
-				h_arg = 0;
+				h_set = set_empty();
 				}
 				}
 		free(arr);
+		return 0;
 }			
 
