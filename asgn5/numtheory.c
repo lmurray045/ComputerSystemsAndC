@@ -61,6 +61,76 @@ void pow_mod(mpz_t out, mpz_t base, mpz_t exponent, mpz_t modulus)
 		mpz_set(out, v);
 }
 
+//uses miller-rabin algorithm to test for primality
+bool is_prime(mpz_t n, uint64_t iters)
+{
+	//var for the f in the miller rabin alg
+	mpz_t f;
+	mpz_init(f);
+	mpz_set_ui(f,4);
+	//var for n - 1
+	mpz_t tn;
+	mpz_init(tn);
+	mpz_set(tn,n);
+	mpz_sub(tn,tn,1);
+	//temporary n variable
+	mpz_t cn;
+	mpz_init(cn);
+	mpz_set(cn,n);
+	//miller-rabin r
+	mpz_t r;
+	mpz_init(r);
+	mpz_fdiv_r(r, tn, f);
+	//miller-rabin s
+	mpz_t s;
+	mpz_init(s);
+	//s-1
+	mpz_t sm1;
+	mpz_init(sm1);
+	//j variable
+	mpz_t j;
+	mpz_init(j);
+	
+	uint64_t count = mpz_get_ui(r);
+	//calculate r and f
+	while((count % 2) = 0)
+		{
+		mpz_set(s, f);
+		mpz_fdiv_r(r, tn, f);
+		mpz_mul_ui(f, f, 2);
+		count = mpz_get_ui(r);
+		}
+	uint64_t i = 1;
+	while(mpz_cmp(i, iters) != 0)
+	 	{
+	 	//TODO: a = Random num from 2 - n-2
+	 	mpz_t y;
+	 	init y; 
+	 	pow_mod(y,a,r,cn);
+	 	if((mpz_cmp_ui(y,1) != 1) && (mpz_cmp_ui(y, tn)))
+	 		{
+	 		mpz_set_ui(j,1);
+	 		mpz set(sm1, s);
+	 		mpz_sub_ui(sm1, 1);
+	 		while((mpz_cmp(j, sm1) == -1 || 0) && (mpz_cmp(y,tn) != 0))
+	 			{
+	 			mpz_t exp; mpz_init(exp); mpz_set_ui(exp,2)
+	 			pow_mod(y,y,exp,n);
+	 			if(mpz_cmp(y, 1) == 0)
+	 				{
+	 				return false;
+	 				}
+	 			mpz_add_ui(j,j,1)
+	 			}
+	 		if(mpz_cmp(y,tn) != 0)
+	 			{
+	 			return false;
+	 			}
+	 			
+	 		}
+	 	}
+	 return true;
+}
 
 
 int main(void)
