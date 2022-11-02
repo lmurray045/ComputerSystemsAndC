@@ -2,6 +2,9 @@
 #include <stdbool.h> //for booleans
 #include <stdint.h> //for int types 
 #include <gmp.h> //for gmp library
+#include "randstate.h"
+#include "stdlib.h"
+#include <math.h>
 
 
 //GCD Function. Used to compute the greatest common divisor of the
@@ -67,12 +70,12 @@ bool is_prime(mpz_t n, uint64_t iters)
 	//var for the f in the miller rabin alg
 	mpz_t f;
 	mpz_init(f);
-	mpz_set_ui(f,4);
+	mpz_set_ui(f,2);
 	//var for n - 1
 	mpz_t tn;
 	mpz_init(tn);
 	mpz_set(tn,n);
-	mpz_sub(tn,tn,1);
+	mpz_sub_ui(tn,tn,1);
 	//temporary n variable
 	mpz_t cn;
 	mpz_init(cn);
@@ -80,47 +83,61 @@ bool is_prime(mpz_t n, uint64_t iters)
 	//miller-rabin r
 	mpz_t r;
 	mpz_init(r);
-	mpz_fdiv_r(r, tn, f);
+	mpz_fdiv_q(r, tn, f);
 	//miller-rabin s
 	mpz_t s;
 	mpz_init(s);
+	mpz_set_ui(s,1);
 	//s-1
 	mpz_t sm1;
 	mpz_init(sm1);
 	//j variable
 	mpz_t j;
 	mpz_init(j);
+	//random variable a
+	mpz_t a;
+	mpz_init(a);
+	
 	
 	uint64_t count = mpz_get_ui(r);
 	//calculate r and f
-	while((count % 2) = 0)
+	while((count % 2) == 0)
 		{
-		mpz_set(s, f);
-		mpz_fdiv_r(r, tn, f);
+		mpz_add_ui(s, s, 1);
 		mpz_mul_ui(f, f, 2);
+		mpz_fdiv_q(r, tn, f);
 		count = mpz_get_ui(r);
+		printf("count2: %lu\n", count);
+		if(count == 1)
+			{
+			break;
+			}
 		}
 	uint64_t i = 1;
-	while(mpz_cmp(i, iters) != 0)
+	while(i != iters)
 	 	{
-	 	//TODO: a = Random num from 2 - n-2
+	 	i++;
+	 	mpz_sub_ui(tn,tn,3);
+	 	mpz_urandomm(a, state, tn);
+	 	mpz_add_ui(tn,tn,3);
+	 	mpz_add_ui(a,a,2);
 	 	mpz_t y;
-	 	init y; 
+		mpz_init(y); 
 	 	pow_mod(y,a,r,cn);
-	 	if((mpz_cmp_ui(y,1) != 1) && (mpz_cmp_ui(y, tn)))
+	 	if((mpz_cmp_ui(y,1) != 1) && (mpz_cmp(y, tn)) != 0)
 	 		{
 	 		mpz_set_ui(j,1);
-	 		mpz set(sm1, s);
-	 		mpz_sub_ui(sm1, 1);
+	 		mpz_set(sm1, s);
+	 		mpz_sub_ui(sm1, sm1, 1);
 	 		while((mpz_cmp(j, sm1) == -1 || 0) && (mpz_cmp(y,tn) != 0))
 	 			{
-	 			mpz_t exp; mpz_init(exp); mpz_set_ui(exp,2)
+	 			mpz_t exp; mpz_init(exp); mpz_set_ui(exp,2);
 	 			pow_mod(y,y,exp,n);
-	 			if(mpz_cmp(y, 1) == 0)
+	 			if(mpz_cmp_ui(y, 1) == 0)
 	 				{
 	 				return false;
 	 				}
-	 			mpz_add_ui(j,j,1)
+	 			mpz_add_ui(j,j,1);
 	 			}
 	 		if(mpz_cmp(y,tn) != 0)
 	 			{
@@ -132,31 +149,91 @@ bool is_prime(mpz_t n, uint64_t iters)
 	 return true;
 }
 
+void make_prime(mpz_t p, uint64_t bits, uint64_t iters)
+	{
+	//make and initlize variables
+	mpz_t a; mpz_init(a);
+	
+	mpz_t rnum; mpz_init(rnum);
+	//generate the max possible number stored in (bits-1) 
+	//(we later bit mask to ensure that this is in the right bit range)
+	uint64_t bit_num = pow(2, (bits-1));
+	bit_num--;
+	//make a random number in that range, stored in a
+	mpz_set_ui(rnum, bit_num);
+	mpz_urandomm(a, state, rnum);
+	//bit mask the msb of a, so that its in our range
+	mpz_t bitmask; mpz_init(bitmask);
+	//make exponent (bits -1)
+	uint64_t exp = (bits-1);
+	//make base one
+	mpz_t base; mpz_init(base);
+	mpz_set_ui(base, 1);
+	//set bit mask to 1 * 2^exp, or the msb of bits being one
+	mpz_mul_2exp(bitmask, base, exp);
+	//bitmask
+	mpz_ior(a, a, bitmask);
+	//calculate a potentially prime number
+	mpz_mul_ui(a,a,6);
+	mpz_sub_ui(a,a,1);
+	// test if a - 1 is prime
+	if(is_prime(a,iters) == 1)
+		{
+		printf("first check\n");
+		mpz_set(p, a);
+		return;
+		}
+	//then test if a + 1 is prime
+	mpz_add_ui(a, a, 2);
+	if(is_prime(a,iters) == 1)
+		{
+		printf("second check\n");
+		mpz_set(p, a);
+		return;
+		}
+	mpz_set_ui(p,1);
+	return;
+	}
 
 int main(void)
 {
+
+randstate_init(1344322);
+
 mpz_t a;
 mpz_init(a);
-mpz_set_d(a, 4);
+mpz_set_ui(a, 4);
 
-mpz_t b;
-mpz_init(b);
-mpz_set_d(b, 45);
+ uint64_t iters = (rand() % 50);
+ 
+ uint64_t bits = 8;
+ 
+//mpz_t b;
+//mpz_init(b);
+//mpz_set_d(b, 45);
 
-mpz_t c;
-mpz_init(c);
-mpz_set_d(c, 45);
+//mpz_t c;
+//mpz_init(c);
+//mpz_set_d(c, 45);
 
-mpz_t d;
-mpz_init(d);
+//mpz_t d;
+//mpz_init(d);
 
-gmp_printf("a: %d b: %d c: %d d: %d\n", mpz_get_ui(a), mpz_get_ui(b), mpz_get_ui(c), mpz_get_ui(d));
+//gmp_printf("a: %d b: %d c: %d d: %d\n", mpz_get_ui(a), mpz_get_ui(b), mpz_get_ui(c), mpz_get_ui(d));
 
-pow_mod(d,a,b,c);
+//pow_mod(d,a,b,c);
 
-gmp_printf("the pow_mod of %d and %d mod %d is: %d\n", mpz_get_ui(a), mpz_get_ui(b), mpz_get_ui(c), mpz_get_ui(d));
+//gmp_printf("the pow_mod of %d and %d mod %d is: %d\n", mpz_get_ui(a), mpz_get_ui(b), mpz_get_ui(c), mpz_get_ui(d));
 
-gmp_printf("a: %d b: %d c: %d d: %d\n", mpz_get_ui(a), mpz_get_ui(b), mpz_get_ui(c), mpz_get_ui(d));
+make_prime(a, bits, iters);
+
+printf("iters: %lu\n", iters);
+
+printf("random prime: %lu\n", mpz_get_ui(a));
+
+printf("%lu is prime: %d\n", mpz_get_ui(a), is_prime(a, iters));
+
+randstate_clear();
 
 return 0;
 }
