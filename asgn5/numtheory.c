@@ -97,7 +97,10 @@ bool is_prime(mpz_t n, uint64_t iters)
 	//random variable a
 	mpz_t a;
 	mpz_init(a);
-	
+	//
+	mpz_t ty; mpz_init(ty); 
+	//
+	mpz_t exp; mpz_init(exp); 
 	
 	uint64_t count = mpz_get_ui(r);
 	//calculate r and f
@@ -123,15 +126,16 @@ bool is_prime(mpz_t n, uint64_t iters)
 	 	mpz_t y;
 		mpz_init(y); 
 	 	pow_mod(y,a,r,cn);
-	 	if((mpz_cmp_ui(y,1) != 1) && (mpz_cmp(y, tn)) != 0)
+	 	if((mpz_cmp_ui(y,1) != 0) && (mpz_cmp(y, tn)) != 0)
 	 		{
 	 		mpz_set_ui(j,1);
 	 		mpz_set(sm1, s);
 	 		mpz_sub_ui(sm1, sm1, 1);
-	 		while((mpz_cmp(j, sm1) == -1 || 0) && (mpz_cmp(y,tn) != 0))
+	 		while((mpz_cmp(j, sm1) != 1) && (mpz_cmp(y,tn) != 0))
 	 			{
-	 			mpz_t exp; mpz_init(exp); mpz_set_ui(exp,2);
-	 			pow_mod(y,y,exp,n);
+	 			mpz_set_ui(exp,2);
+	 			mpz_set(ty,y);
+	 			pow_mod(y,ty,exp,cn);
 	 			if(mpz_cmp_ui(y, 1) == 0)
 	 				{
 	 				return false;
@@ -176,7 +180,7 @@ void make_prime(mpz_t p, uint64_t bits, uint64_t iters)
 	mpz_mul_ui(a,a,6);
 	mpz_sub_ui(a,a,1);
 	// test if a - 1 is prime
-	if(mpz_probab_prime_p(a,iters) >= 1)
+	if(is_prime(a,iters) == 1)
 		{
 		printf("first check\n");
 		mpz_set(p, a);
@@ -184,18 +188,16 @@ void make_prime(mpz_t p, uint64_t bits, uint64_t iters)
 		}
 	//then test if a + 1 is prime
 	mpz_add_ui(a, a, 2);
-	if(mpz_probab_prime_p(a,iters) >= 1)
+	if(is_prime(a,iters) == 1)
 		{
 		printf("second check\n");
 		mpz_set(p, a);
 		return;
 		}
-	while(mpz_probab_prime_p(a,iters) == 0)
+	while(is_prime(a,iters) == 0)
 		{
 		mpz_add_ui(a,a,2);
 		}
-	printf("third check\n");
-	printf("prob val: %d\n",mpz_probab_prime_p(a,iters));
 	mpz_set(p,a);
 	return;
 	}
@@ -203,11 +205,11 @@ void make_prime(mpz_t p, uint64_t bits, uint64_t iters)
 int main(void)
 {
 
-randstate_init(13542998);
+randstate_init(1998);
 
 mpz_t a;
 mpz_init(a);
-mpz_set_ui(a, 4);
+//mpz_set_ui(a, 75289);
 
  uint64_t iters = rand() % 5000;
  
@@ -232,7 +234,7 @@ mpz_set_ui(a, 4);
 
 make_prime(a, bits, iters);
 
-printf("iters: %lu\n", iters);
+printf("prob val: %d\n",mpz_probab_prime_p(a,iters));
 
 printf("random prime: %lu\n", mpz_get_ui(a));
 
