@@ -107,7 +107,6 @@ bool is_prime(mpz_t n, uint64_t iters)
 		mpz_mul_ui(f, f, 2);
 		mpz_fdiv_q(r, tn, f);
 		count = mpz_get_ui(r);
-		printf("count2: %lu\n", count);
 		if(count == 1)
 			{
 			break;
@@ -177,7 +176,7 @@ void make_prime(mpz_t p, uint64_t bits, uint64_t iters)
 	mpz_mul_ui(a,a,6);
 	mpz_sub_ui(a,a,1);
 	// test if a - 1 is prime
-	if(is_prime(a,iters) == 1)
+	if(mpz_probab_prime_p(a,iters) >= 1)
 		{
 		printf("first check\n");
 		mpz_set(p, a);
@@ -185,28 +184,34 @@ void make_prime(mpz_t p, uint64_t bits, uint64_t iters)
 		}
 	//then test if a + 1 is prime
 	mpz_add_ui(a, a, 2);
-	if(is_prime(a,iters) == 1)
+	if(mpz_probab_prime_p(a,iters) >= 1)
 		{
 		printf("second check\n");
 		mpz_set(p, a);
 		return;
 		}
-	mpz_set_ui(p,1);
+	while(mpz_probab_prime_p(a,iters) == 0)
+		{
+		mpz_add_ui(a,a,2);
+		}
+	printf("third check\n");
+	printf("prob val: %d\n",mpz_probab_prime_p(a,iters));
+	mpz_set(p,a);
 	return;
 	}
 
 int main(void)
 {
 
-randstate_init(1344322);
+randstate_init(13542998);
 
 mpz_t a;
 mpz_init(a);
 mpz_set_ui(a, 4);
 
- uint64_t iters = (rand() % 50);
+ uint64_t iters = rand() % 5000;
  
- uint64_t bits = 8;
+ uint64_t bits = 32;
  
 //mpz_t b;
 //mpz_init(b);
