@@ -153,7 +153,7 @@ bool is_prime(mpz_t n, uint64_t iters)
 }
 
 void make_prime(mpz_t p, uint64_t bits, uint64_t iters)
-	{
+{
 	//make and initlize variables
 	mpz_t a; mpz_init(a);
 	
@@ -200,20 +200,64 @@ void make_prime(mpz_t p, uint64_t bits, uint64_t iters)
 		}
 	mpz_set(p,a);
 	return;
-	}
+}
+
+void mod_inverse(mpz_t i, mpz_t a, mpz_t n)
+{
+	//r and r'
+	mpz_t r; mpz_init(r); mpz_set(r,n);
+	mpz_t rp; mpz_init(rp); mpz_set(rp,a);
+	//t and t'
+	mpz_t t; mpz_init(t); mpz_set_ui(t,0);
+	mpz_t tp; mpz_init(tp); mpz_set_ui(tp,1);
+	//q variables initilization
+	mpz_t q; mpz_init(q);
+	mpz_t qr; mpz_init(qr);
+	mpz_t qt; mpz_init(qt);
+	//temp initilization
+	mpz_t temp; mpz_init(temp);
+	
+	while(mpz_cmp_ui(rp, 0) != 0)
+		{
+		//q = r / r'
+		mpz_fdiv_q(q, r, rp);
+		//set [r, r'] = [r', r - q * r']
+		mpz_set(temp, rp);
+		mpz_mul(qr,q,rp);
+		mpz_sub(rp,r,qr);
+		mpz_set(r, temp);
+		//set [t, t'] = [t', t - q * t']
+		mpz_set(temp, tp);
+		mpz_mul(qt,q,tp);
+		mpz_sub(tp,t,qt);
+		mpz_set(t, temp);
+		}
+	if(mpz_cmp_ui(r, 1) > 0)
+		{
+		mpz_set_ui(i, 0);
+		return;
+		}
+	if(mpz_cmp_ui(t,0) < 0)
+		{
+		mpz_add(t,t,n);
+		}
+	mpz_set(i, t);
+	return;
+}
+	
 
 int main(void)
 {
 
-randstate_init(1998);
+//randstate_init(1998);
 
-mpz_t a;
-mpz_init(a);
+//mpz_t a;
+//mpz_init(a);
 //mpz_set_ui(a, 75289);
 
- uint64_t iters = rand() % 5000;
+ //uint64_t iters = rand() % 5000;
  
- uint64_t bits = 32;
+ //uint64_t bits = 32;
  
 //mpz_t b;
 //mpz_init(b);
@@ -232,15 +276,31 @@ mpz_init(a);
 
 //gmp_printf("the pow_mod of %d and %d mod %d is: %d\n", mpz_get_ui(a), mpz_get_ui(b), mpz_get_ui(c), mpz_get_ui(d));
 
-make_prime(a, bits, iters);
+//make_prime(a, bits, iters);
 
-printf("prob val: %d\n",mpz_probab_prime_p(a,iters));
+//printf("prob val: %d\n", mpz_probab_prime_p(a,iters));
 
-printf("random prime: %lu\n", mpz_get_ui(a));
+//printf("random prime: %lu\n", mpz_get_ui(a));
 
-printf("%lu is prime: %d\n", mpz_get_ui(a), is_prime(a, iters));
+//printf("%lu is prime: %d\n", mpz_get_ui(a), is_prime(a, iters));
 
-randstate_clear();
+//randstate_clear();
+
+mpz_t i;
+mpz_init(i);
+
+mpz_t a;
+mpz_init(a);
+mpz_set_ui(a, 233443);
+
+mpz_t n;
+mpz_init(n);
+mpz_set_ui(n, 45452353343);
+
+mod_inverse(i, a, n);
+
+printf("modular inverse of %lu mod %lu is %lu\n", mpz_get_ui(a), mpz_get_ui(n), mpz_get_ui(i));
+
 
 return 0;
 }
