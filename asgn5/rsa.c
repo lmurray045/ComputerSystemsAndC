@@ -80,6 +80,7 @@ void rsa_write_pub(mpz_t n, mpz_t e, mpz_t s, char username[], FILE *pbfile)
 	gmp_fprintf(pbfile, "%Zx\n", e);
 	gmp_fprintf(pbfile, "%Zx\n", s);
 	fprintf(pbfile, "%s\n", username);
+	return;
 }
 
 void rsa_make_priv(mpz_t d, mpz_t e, mpz_t p, mpz_t q)
@@ -92,12 +93,14 @@ void rsa_make_priv(mpz_t d, mpz_t e, mpz_t p, mpz_t q)
 	mpz_mul(lam, pm1, qm1);
 	mpz_fdiv_q(lam, lam, gc);
 	mod_inverse(d, e, lam);
+	return;
 }
 
 void rsa_read_priv(mpz_t n, mpz_t d, FILE *pvfile)
 {
 	gmp_fscanf(pvfile, "%Zx\n", n);
 	gmp_fscanf(pvfile, "%Zx\n", d);
+	return;
 }
 
 void rsa_read_pub(mpz_t n, mpz_t e, mpz_t s, char username[], FILE *pbfile)
@@ -106,13 +109,45 @@ void rsa_read_pub(mpz_t n, mpz_t e, mpz_t s, char username[], FILE *pbfile)
 	gmp_fscanf(pbfile, "%Zx\n", e);
 	gmp_fscanf(pbfile, "%Zx\n", s);
 	fscanf(pbfile, "%s\n", username);
-
+	return;
 }
 
 void rsa_write_priv(mpz_t n, mpz_t d, FILE *pvfile)
 {
 	gmp_fprintf(pvfile, "%Zx\n", n);
 	gmp_fprintf(pvfile, "%Zx\n", d);
+	return;
+}
+
+void rsa_encrypt(mpz_t c, mpz_t m, mpz_t e, mpz_t n)
+{
+	pow_mod(c, m, e, n);
+	return;
+}
+
+void rsa_encrypt_file(FILE *infile, FILE *outfile, mpz_t n, mpz_t e)
+{
+	//SOURCE: this function was found in the GMP misceleanous functions 
+	//manual page, 5.15.
+	mpz_t m; mpz_init(m);
+	mpz_t c; mpz_init(c);
+	int k = mpz_sizeinbase(n, 2);
+	k = (k - 1) / 8;
+	uint8_t * block = calloc(k, sizeof(uint8_t));
+	*block = 0xFF;
+	for(int ch = getc(infile); ch != EOF;)
+		{
+		int j = 1;
+		for(; j <= k && ch != EOF; j++)
+			{
+			*(block+j) = ch;
+			ch = getc(infile);
+			}
+		mpz_import(m, j, 1, sizeof(uint8_t), 1, 0, block);
+		rsa_encrypt(c, m, e, n);
+		gmp_fprintf(outfile, "%Zx\n", m);
+		}
+	
 }
 
 int main(void)
@@ -124,25 +159,35 @@ mpz_t q; mpz_init(q);
 mpz_t n; mpz_init(n);
 mpz_t e; mpz_init(e);
 mpz_t d; mpz_init(d);
-mpz_t s; mpz_init(s); mpz_set_ui(s, 12345);
-
+//mpz_t s; mpz_init(s); mpz_set_ui(s, 12345);
+/*
 mpz_t nt; mpz_init(nt);
 mpz_t e2; mpz_init(e2);
 mpz_t s2; mpz_init(s2); mpz_set_ui(s, 12345);
 mpz_t dt; mpz_init(dt);
-
-char username2[8];
+*/
 
 uint64_t bits = 1024;
 uint64_t iters = ( random() % 500 );
 
 rsa_make_pub(p, q, n, e, bits, iters);
-printf("p: %lu, q: %lu, n: %lu, e: %lu\n", mpz_get_ui(p),mpz_get_ui(q),mpz_get_ui(n),mpz_get_ui(e));
 
 rsa_make_priv(d, e, p, q);
-printf("d: %lu\n", mpz_get_ui(d));
+
+FILE * message = fopen("message.txt", "w");
+fprintf(message, "Hello, my name is Liam. I live at 1070, apple court.\n I have been told that I am a genius, of sort, however thats not true.\n I simple observe the world around me, and calculate my observations acordingly. \n Beyond that, I am a simple boy, like any other.");
+fclose(message);
+
+message = fopen("message.txt", "r");
+FILE * cypher = fopen("cypher.txt", "w");
+
+rsa_encrypt_file(message, cypher, n, e);
+
+fclose(message);
+fclose(cypher);
 
 
+/*
 char username[] = "Liam";
 //public keys
 FILE *pbfile = fopen("pbfile.txt", "w");
@@ -176,7 +221,7 @@ rsa_write_priv(nt, dt, pvfile2);
 
 fclose(pvfile2);
 fclose(pvfile);
-
+*/
 
 randstate_clear();
 }
