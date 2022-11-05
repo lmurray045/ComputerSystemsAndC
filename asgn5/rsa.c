@@ -94,10 +94,10 @@ void rsa_make_priv(mpz_t d, mpz_t e, mpz_t p, mpz_t q)
 	mod_inverse(d, e, lam);
 }
 
-void rsa_write_priv(mpz_t n, mpz_t d, FILE *pvfile)
+void rsa_read_priv(mpz_t n, mpz_t d, FILE *pvfile)
 {
-	gmp_fprintf(pvfile, "%Zx\n", n);
-	gmp_fprintf(pvfile, "%Zx\n", d);
+	gmp_fscanf(pvfile, "%Zx\n", n);
+	gmp_fscanf(pvfile, "%Zx\n", d);
 }
 
 void rsa_read_pub(mpz_t n, mpz_t e, mpz_t s, char username[], FILE *pbfile)
@@ -107,6 +107,12 @@ void rsa_read_pub(mpz_t n, mpz_t e, mpz_t s, char username[], FILE *pbfile)
 	gmp_fscanf(pbfile, "%Zx\n", s);
 	fscanf(pbfile, "%s\n", username);
 
+}
+
+void rsa_write_priv(mpz_t n, mpz_t d, FILE *pvfile)
+{
+	gmp_fprintf(pvfile, "%Zx\n", n);
+	gmp_fprintf(pvfile, "%Zx\n", d);
 }
 
 int main(void)
@@ -123,6 +129,8 @@ mpz_t s; mpz_init(s); mpz_set_ui(s, 12345);
 mpz_t nt; mpz_init(nt);
 mpz_t e2; mpz_init(e2);
 mpz_t s2; mpz_init(s2); mpz_set_ui(s, 12345);
+mpz_t dt; mpz_init(dt);
+
 char username2[8];
 
 uint64_t bits = 1024;
@@ -136,12 +144,8 @@ printf("d: %lu\n", mpz_get_ui(d));
 
 
 char username[] = "Liam";
-
+//public keys
 FILE *pbfile = fopen("pbfile.txt", "w");
-
-//FILE *pbfile2 = fopen("pbfile2.txt", "w");
-
-//FILE *pvfile = fopen("pvfile.txt", "w");
 
 rsa_write_pub(n, e, s, username, pbfile);
 
@@ -156,10 +160,23 @@ rsa_write_pub(nt, e2, s2, username2, pbfile2);
 
 fclose(pbfile2);
 fclose(pbfile);
+//private keys
+FILE *pvfile = fopen("pvfile.txt", "w");
 
-//rsa_write_priv(n, d, pvfile);
+rsa_write_priv(n, d, pvfile);
 
-//fclose(pvfile);
+fclose(pvfile);
+
+pvfile = fopen("pvfile.txt", "r");
+FILE *pvfile2 = fopen("pvfile2.txt", "w");
+
+rsa_read_priv(nt, dt, pvfile);
+
+rsa_write_priv(nt, dt, pvfile2);
+
+fclose(pvfile2);
+fclose(pvfile);
+
 
 randstate_clear();
 }
