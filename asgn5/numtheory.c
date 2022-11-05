@@ -1,8 +1,11 @@
+#include "randstate.h"
+#include "numtheory.h"
+#include "randstate.h"
 #include <stdio.h> //for print f
+#include <gmp.h> //for gmp library
 #include <stdbool.h> //for booleans
 #include <stdint.h> //for int types 
-#include <gmp.h> //for gmp library
-#include "randstate.h"
+#include <stdarg.h>
 #include "stdlib.h"
 #include <math.h>
 
@@ -182,7 +185,6 @@ void make_prime(mpz_t p, uint64_t bits, uint64_t iters)
 	// test if a - 1 is prime
 	if(is_prime(a,iters) == 1)
 		{
-		printf("first check\n");
 		mpz_set(p, a);
 		return;
 		}
@@ -190,7 +192,6 @@ void make_prime(mpz_t p, uint64_t bits, uint64_t iters)
 	mpz_add_ui(a, a, 2);
 	if(is_prime(a,iters) == 1)
 		{
-		printf("second check\n");
 		mpz_set(p, a);
 		return;
 		}
@@ -245,62 +246,3 @@ void mod_inverse(mpz_t i, mpz_t a, mpz_t n)
 	return;
 }
 	
-
-int main(void)
-{
-
-//randstate_init(1998);
-
-//mpz_t a;
-//mpz_init(a);
-//mpz_set_ui(a, 75289);
-
- //uint64_t iters = rand() % 5000;
- 
- //uint64_t bits = 32;
- 
-//mpz_t b;
-//mpz_init(b);
-//mpz_set_d(b, 45);
-
-//mpz_t c;
-//mpz_init(c);
-//mpz_set_d(c, 45);
-
-//mpz_t d;
-//mpz_init(d);
-
-//gmp_printf("a: %d b: %d c: %d d: %d\n", mpz_get_ui(a), mpz_get_ui(b), mpz_get_ui(c), mpz_get_ui(d));
-
-//pow_mod(d,a,b,c);
-
-//gmp_printf("the pow_mod of %d and %d mod %d is: %d\n", mpz_get_ui(a), mpz_get_ui(b), mpz_get_ui(c), mpz_get_ui(d));
-
-//make_prime(a, bits, iters);
-
-//printf("prob val: %d\n", mpz_probab_prime_p(a,iters));
-
-//printf("random prime: %lu\n", mpz_get_ui(a));
-
-//printf("%lu is prime: %d\n", mpz_get_ui(a), is_prime(a, iters));
-
-//randstate_clear();
-
-mpz_t i;
-mpz_init(i);
-
-mpz_t a;
-mpz_init(a);
-mpz_set_ui(a, 233443);
-
-mpz_t n;
-mpz_init(n);
-mpz_set_ui(n, 45452353343);
-
-mod_inverse(i, a, n);
-
-printf("modular inverse of %lu mod %lu is %lu\n", mpz_get_ui(a), mpz_get_ui(n), mpz_get_ui(i));
-
-
-return 0;
-}
