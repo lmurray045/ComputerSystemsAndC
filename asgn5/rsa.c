@@ -1,10 +1,11 @@
+#include <stdio.h> //for print f
 #include "randstate.h"
 #include "numtheory.h"
 #include "randstate.h"
-#include <stdio.h> //for print f
+#include <gmp.h> //for gmp library
 #include <stdbool.h> //for booleans
 #include <stdint.h> //for int types 
-#include <gmp.h> //for gmp library
+#include <stdarg.h>
 #include "stdlib.h"
 #include <math.h>
 
@@ -70,6 +71,17 @@ void rsa_make_pub(mpz_t p, mpz_t q, mpz_t n, mpz_t e, uint64_t nbits, uint64_t i
 	mpz_mul(n, p, q);
 	return;
 }
+
+void rsa_write_pub(mpz_t n, mpz_t e, mpz_t s, char username[], FILE *pbfile)
+{
+	//const char str[] = "%zx\n";
+	//const char * point = &str[0];
+	gmp_fprintf(pbfile, "%Zx\n", n);
+	gmp_fprintf(pbfile, "%Zx\n", e);
+	gmp_fprintf(pbfile, "%Zx\n", s);
+	fprintf(pbfile, "%s\n", username);
+}
+
 int main(void)
 {
 randstate_init(1234567);
@@ -78,12 +90,21 @@ mpz_t p; mpz_init(p);
 mpz_t q; mpz_init(q);
 mpz_t n; mpz_init(n);
 mpz_t e; mpz_init(e);
+mpz_t s; mpz_init(s); mpz_set_ui(s, 12345);
 
-uint64_t bits = 5000;
+uint64_t bits = 1024;
 uint64_t iters = ( random() % 500 );
 
 rsa_make_pub(p, q, n, e, bits, iters);
 printf("p: %lu, q: %lu, n: %lu, e: %lu\n", mpz_get_ui(p),mpz_get_ui(q),mpz_get_ui(n),mpz_get_ui(e));
+
+char username[] = "Liam";
+
+FILE *pbfile = fopen("pbfile.txt", "w");
+
+rsa_write_pub(n, e, s, username, pbfile);
+
+fclose(pbfile);
 
 randstate_clear();
 }
