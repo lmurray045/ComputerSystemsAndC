@@ -82,6 +82,24 @@ void rsa_write_pub(mpz_t n, mpz_t e, mpz_t s, char username[], FILE *pbfile)
 	fprintf(pbfile, "%s\n", username);
 }
 
+void rsa_make_priv(mpz_t d, mpz_t e, mpz_t p, mpz_t q)
+{
+	mpz_t pm1; mpz_init(pm1); mpz_sub_ui(pm1, p, 1);
+	mpz_t qm1; mpz_init(qm1); mpz_sub_ui(qm1, q, 1);
+	mpz_t lam; mpz_init(lam);
+	mpz_t gc; mpz_init(gc);
+	gcd(gc, pm1, qm1);
+	mpz_mul(lam, pm1, qm1);
+	mpz_fdiv_q(lam, lam, gc);
+	mod_inverse(d, e, lam);
+}
+
+void rsa_write_priv(mpz_t n, mpz_t d, FILE *pvfile)
+{
+	gmp_fprintf(pvfile, "%Zx\n", n);
+	gmp_fprintf(pvfile, "%Zx\n", d);
+}
+
 int main(void)
 {
 randstate_init(1234567);
@@ -90,6 +108,7 @@ mpz_t p; mpz_init(p);
 mpz_t q; mpz_init(q);
 mpz_t n; mpz_init(n);
 mpz_t e; mpz_init(e);
+mpz_t d; mpz_init(d);
 mpz_t s; mpz_init(s); mpz_set_ui(s, 12345);
 
 uint64_t bits = 1024;
@@ -98,13 +117,23 @@ uint64_t iters = ( random() % 500 );
 rsa_make_pub(p, q, n, e, bits, iters);
 printf("p: %lu, q: %lu, n: %lu, e: %lu\n", mpz_get_ui(p),mpz_get_ui(q),mpz_get_ui(n),mpz_get_ui(e));
 
+rsa_make_priv(d, e, p, q);
+printf("d: %lu\n", mpz_get_ui(d));
+
+
 char username[] = "Liam";
 
 FILE *pbfile = fopen("pbfile.txt", "w");
 
+FILE *pvfile = fopen("pvfile.txt", "w");
+
 rsa_write_pub(n, e, s, username, pbfile);
 
 fclose(pbfile);
+
+rsa_write_priv(n, d, pvfile);
+
+fclose(pvfile);
 
 randstate_clear();
 }
