@@ -100,6 +100,15 @@ void rsa_write_priv(mpz_t n, mpz_t d, FILE *pvfile)
 	gmp_fprintf(pvfile, "%Zx\n", d);
 }
 
+void rsa_read_pub(mpz_t n, mpz_t e, mpz_t s, char username[], FILE *pbfile)
+{
+	gmp_fscanf(pbfile, "%Zx\n", n);
+	gmp_fscanf(pbfile, "%Zx\n", e);
+	gmp_fscanf(pbfile, "%Zx\n", s);
+	fscanf(pbfile, "%s\n", username);
+
+}
+
 int main(void)
 {
 randstate_init(1234567);
@@ -110,6 +119,11 @@ mpz_t n; mpz_init(n);
 mpz_t e; mpz_init(e);
 mpz_t d; mpz_init(d);
 mpz_t s; mpz_init(s); mpz_set_ui(s, 12345);
+
+mpz_t nt; mpz_init(nt);
+mpz_t e2; mpz_init(e2);
+mpz_t s2; mpz_init(s2); mpz_set_ui(s, 12345);
+char username2[8];
 
 uint64_t bits = 1024;
 uint64_t iters = ( random() % 500 );
@@ -125,15 +139,27 @@ char username[] = "Liam";
 
 FILE *pbfile = fopen("pbfile.txt", "w");
 
-FILE *pvfile = fopen("pvfile.txt", "w");
+//FILE *pbfile2 = fopen("pbfile2.txt", "w");
+
+//FILE *pvfile = fopen("pvfile.txt", "w");
 
 rsa_write_pub(n, e, s, username, pbfile);
 
 fclose(pbfile);
 
-rsa_write_priv(n, d, pvfile);
+pbfile = fopen("pbfile.txt", "r");
+FILE *pbfile2 = fopen("pbfile2.txt", "w");
 
-fclose(pvfile);
+rsa_read_pub(nt, e2, s2, username2, pbfile);
+
+rsa_write_pub(nt, e2, s2, username2, pbfile2);
+
+fclose(pbfile2);
+fclose(pbfile);
+
+//rsa_write_priv(n, d, pvfile);
+
+//fclose(pvfile);
 
 randstate_clear();
 }
