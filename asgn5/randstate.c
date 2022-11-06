@@ -21,6 +21,7 @@ void randstate_init(uint64_t seed)
 	gmp_randinit_mt(state);
 	gmp_randseed(state, mseed);
 	srand(seed);
+	mpz_clear(mseed);
 	return;
 }
 //clear memory w/state

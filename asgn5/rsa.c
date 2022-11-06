@@ -12,7 +12,6 @@
 //rsa make pub
 void rsa_make_pub(mpz_t p, mpz_t q, mpz_t n, mpz_t e, uint64_t nbits, uint64_t iters)
 {
-	printf("beginning\n");
 	//make p with random bits
 	uint64_t bottom_range = nbits / 4;
 	uint64_t top_range = ((2 * nbits) / 4) + 1;
@@ -20,39 +19,28 @@ void rsa_make_pub(mpz_t p, mpz_t q, mpz_t n, mpz_t e, uint64_t nbits, uint64_t i
 	mpz_t trange; mpz_init(trange); mpz_set_ui(trange, top_range);
 	mpz_t brange; mpz_init(brange); mpz_set_ui(brange, bottom_range);
 	mpz_urandomm(pbt, state, trange);
-	printf("pbt: %lu\n", mpz_get_ui(pbt));
 	mpz_add(pbt, pbt, brange);
 	
-	printf("check 1\n");
 	uint64_t pnbits = mpz_get_ui(pbt);
 	//make p prime number
 	make_prime(p, pnbits, iters);
-	printf("p bits: %lu\n", pnbits);
 	//calculate q bits
 	//calculate q
 	uint64_t qnbits = nbits - pnbits;
-	printf("qnbits: %lu\n", qnbits);
-	
-	printf("check 2\n");
-
 	make_prime(q, qnbits, iters);
-	printf("q calculated\n");
 	//calculate lambda 
 	//declare variables
 	mpz_t qm1; mpz_init(qm1);
 	mpz_t pm1; mpz_init(pm1);
 	mpz_t lam; mpz_init(lam);
 	mpz_t prod; mpz_init(prod);
-	printf("variables made\n");
 	//find q-1 and p-1
 	mpz_sub_ui(qm1, q, 1);
 	mpz_sub_ui(pm1, p, 1);
 	mpz_mul(prod, qm1, pm1);
-	printf("variables calculated\n");
 	//find lambda
 	gcd(lam, qm1, pm1);
 	mpz_fdiv_q(lam, prod, lam);
-	printf("check 3\n");
 	//find e
 	mpz_t test; mpz_init(test);
 	uint64_t e_top = (3 * nbits) / 4;
@@ -60,15 +48,16 @@ void rsa_make_pub(mpz_t p, mpz_t q, mpz_t n, mpz_t e, uint64_t nbits, uint64_t i
 	mpz_urandomb(e, state, e_top);
 	mpz_add_ui(e, e, e_bot);
 	gcd(test, e, lam);
-	printf("while loop\n");
 	while(mpz_cmp_ui(test, 1) != 0)
 		{
 		mpz_urandomb(e, state, e_top);
 		mpz_add_ui(e, e, e_bot);
 		gcd(test, e, lam);
 		}
-	printf("exited while loop\n");
 	mpz_mul(n, p, q);
+	mpz_clear(pbt); mpz_clear(qm1); mpz_clear(pm1);
+	mpz_clear(test); mpz_clear(trange); mpz_clear(brange); 
+	mpz_clear(lam); mpz_clear(prod);
 	return;
 }
 
@@ -93,6 +82,7 @@ void rsa_make_priv(mpz_t d, mpz_t e, mpz_t p, mpz_t q)
 	mpz_mul(lam, pm1, qm1);
 	mpz_fdiv_q(lam, lam, gc);
 	mod_inverse(d, e, lam);
+	mpz_clear(lam); mpz_clear(pm1); mpz_clear(qm1); mpz_clear(gc);
 	return;
 }
 
@@ -133,7 +123,6 @@ void rsa_encrypt_file(FILE *infile, FILE *outfile, mpz_t n, mpz_t e)
 	mpz_t c; mpz_init(c);
 	int k = mpz_sizeinbase(n, 2);
 	k = (k - 1) / 8;
-	printf("k: %d\n", k);
 	uint8_t * block = calloc(k, sizeof(uint8_t));
 	*block = 0xFF;
 	for(int ch = getc(infile); (ch != EOF);)
@@ -141,23 +130,15 @@ void rsa_encrypt_file(FILE *infile, FILE *outfile, mpz_t n, mpz_t e)
 		int j = 1;
 		for(; j <= (k-1) && ch != EOF; j++)
 			{
-			printf("ch: %d\n", ch);
 			*(block+j) = ch;
 			ch = getc(infile);
-			for(int i = 0; i <= j; i++)
-				{
-				printf("i: %d, block[i]: %d\n",i, *(block+i));
-				}
-			printf("block: %d\n", ch);
 			}
-		printf("j: %d\n", j);
 		mpz_import(m, (j), 1, sizeof(*block), 1, 0, block);
-		gmp_printf("m: %Zd, e: %Zd, n: %Zd\n", m, e, n);
 		rsa_encrypt(c, m, e, n);
-		gmp_printf("m: %Zd\n", m);
-		gmp_printf("c: %Zd\n", c);
+		gmp_printf("c: %Zx\n", c);
 		gmp_fprintf(outfile, "%Zx\n", c);
-		}
+		} 
+	mpz_clear(m); mpz_clear(c);
 	return;
 }
 
@@ -189,7 +170,8 @@ void rsa_decrypt_file(FILE *infile, FILE *outfile, mpz_t n, mpz_t d)
 			fprintf(outfile, "%c", *(block+counter));
 			} 
 		}
-	while(gmp_fscanf(infile, "%Zx", cm) == 1);
+	while(gmp_fscanf(infile, "%Zx", cm) == 1); 
+	mpz_clear(m); mpz_clear(cm);
 	return;
 }
 
@@ -205,10 +187,12 @@ bool rsa_verify(mpz_t m, mpz_t s, mpz_t e, mpz_t n)
 	pow_mod(t, s, e, n);
 	if(mpz_cmp(t, m) == 0)
 		{
+		mpz_clear(t);
 		return true;
 		}
 	else
 		{
+		mpz_clear(t);
 		return false;
 		}
 }
@@ -241,7 +225,7 @@ rsa_make_priv(d, e, p, q);
 printf("p: %lu, q: %lu, n: %lu, e: %lu, d: %lu\n", mpz_get_ui(p), mpz_get_ui(q), mpz_get_ui(n), mpz_get_ui(e), mpz_get_ui(d));
 
 FILE * message = fopen("message.txt", "w");
-fprintf(message, "hello, this is a longer message.\nIn flight snacks are not provided.");
+fprintf(message, "h");
 fclose(message);
 
 FILE * message2 = fopen("message.txt", "r");
