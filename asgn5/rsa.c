@@ -133,21 +133,64 @@ void rsa_encrypt_file(FILE *infile, FILE *outfile, mpz_t n, mpz_t e)
 	mpz_t c; mpz_init(c);
 	int k = mpz_sizeinbase(n, 2);
 	k = (k - 1) / 8;
+	printf("k: %d\n", k);
 	uint8_t * block = calloc(k, sizeof(uint8_t));
 	*block = 0xFF;
-	for(int ch = getc(infile); ch != EOF;)
+	for(int ch = getc(infile); (ch != EOF);)
 		{
 		int j = 1;
-		for(; j <= k && ch != EOF; j++)
+		for(; j <= (k-1) && ch != EOF; j++)
 			{
+			printf("ch: %d\n", ch);
 			*(block+j) = ch;
 			ch = getc(infile);
+			for(int i = 0; i <= j; i++)
+				{
+				printf("i: %d, block[i]: %d\n",i, *(block+i));
+				}
+			printf("block: %d\n", ch);
 			}
-		mpz_import(m, j, 1, sizeof(uint8_t), 1, 0, block);
+		printf("j: %d\n", j);
+		mpz_import(m, (j), 1, sizeof(*block), 1, 0, block);
+		gmp_printf("m: %Zd, e: %Zd, n: %Zd\n", m, e, n);
 		rsa_encrypt(c, m, e, n);
-		gmp_fprintf(outfile, "%Zx\n", m);
+		gmp_printf("m: %Zd\n", m);
+		gmp_printf("c: %Zd\n", c);
+		gmp_fprintf(outfile, "%Zx\n", c);
 		}
+	return;
+}
+
+void rsa_decrypt(mpz_t m, mpz_t c, mpz_t d, mpz_t n)
+{
+	pow_mod(m, c, d, n);
+	return;
+}
+
+void rsa_decrypt_file(FILE *infile, FILE *outfile, mpz_t n, mpz_t d)
+{
+	//SOURCE: this function was found in the GMP misceleanous functions 
+	//manual page, 5.15.
+	mpz_t m; mpz_init(m);
+	mpz_t cm; mpz_init(cm); mpz_set_ui(cm, 0);
+	uint64_t jv = 0;
+	uint64_t * j = &jv;
 	
+	int k = mpz_sizeinbase(n, 2);
+	k = (k - 1) / 8;
+	uint8_t * block = calloc(k, sizeof(uint8_t));
+	do
+		{
+		gmp_fscanf(infile, "%Zx", cm);
+		rsa_decrypt(m, cm, d, n);
+		mpz_export(block, j, 1, sizeof(uint8_t), 1, 0, m);
+		for(uint64_t counter = 1; counter <= jv; counter++)
+			{
+			fprintf(outfile, "%d", *(block+counter));
+			} 
+		}
+	while(gmp_fscanf(infile, "%Zx", cm) == 1);
+	return;
 }
 
 int main(void)
@@ -167,23 +210,33 @@ mpz_t s2; mpz_init(s2); mpz_set_ui(s, 12345);
 mpz_t dt; mpz_init(dt);
 */
 
-uint64_t bits = 1024;
+uint64_t bits = 16;
 uint64_t iters = ( random() % 500 );
 
 rsa_make_pub(p, q, n, e, bits, iters);
 
 rsa_make_priv(d, e, p, q);
 
+printf("p: %lu, q: %lu, n: %lu, e: %lu, d: %lu\n", mpz_get_ui(p), mpz_get_ui(q), mpz_get_ui(n), mpz_get_ui(e), mpz_get_ui(d));
+
 FILE * message = fopen("message.txt", "w");
-fprintf(message, "Hello, my name is Liam. I live at 1070, apple court.\n I have been told that I am a genius, of sort, however thats not true.\n I simple observe the world around me, and calculate my observations acordingly. \n Beyond that, I am a simple boy, like any other.");
+fprintf(message, "hello");
 fclose(message);
 
-message = fopen("message.txt", "r");
+FILE * message2 = fopen("message.txt", "r");
 FILE * cypher = fopen("cypher.txt", "w");
 
-rsa_encrypt_file(message, cypher, n, e);
+rsa_encrypt_file(message2, cypher, n, e);
 
-fclose(message);
+fclose(cypher);
+fclose(message2);
+
+cypher = fopen("cypher.txt", "r");
+FILE * decrypted_message = fopen("decrypted_message.txt", "w");
+
+rsa_decrypt_file(cypher, decrypted_message, n, d);
+
+fclose(decrypted_message);
 fclose(cypher);
 
 
