@@ -193,6 +193,27 @@ void rsa_decrypt_file(FILE *infile, FILE *outfile, mpz_t n, mpz_t d)
 	return;
 }
 
+void rsa_sign(mpz_t s, mpz_t m, mpz_t d, mpz_t n)
+{
+	pow_mod(s, m, d, n);
+	return;
+}
+
+bool rsa_verify(mpz_t m, mpz_t s, mpz_t e, mpz_t n)
+{
+	mpz_t t; mpz_init(t);
+	pow_mod(t, s, e, n);
+	if(mpz_cmp(t, m) == 0)
+		{
+		return true;
+		}
+	else
+		{
+		return false;
+		}
+}
+
+
 int main(void)
 {
 randstate_init(1234567);
@@ -210,7 +231,7 @@ mpz_t s2; mpz_init(s2); mpz_set_ui(s, 12345);
 mpz_t dt; mpz_init(dt);
 */
 
-uint64_t bits = 16;
+uint64_t bits = 64;
 uint64_t iters = ( random() % 500 );
 
 rsa_make_pub(p, q, n, e, bits, iters);
@@ -239,6 +260,22 @@ rsa_decrypt_file(cypher, decrypted_message, n, d);
 fclose(decrypted_message);
 fclose(cypher);
 
+mpz_t s; mpz_init(s);
+mpz_t m; mpz_init(m);
+mpz_t m2; mpz_init(m2);
+
+
+mpz_set_ui(m, 12345);
+mpz_set_ui(m, 54321);
+
+rsa_sign(s, m, d, n);
+
+if(rsa_verify(m2, s, e, n) == true)
+	{
+	printf("true\n");
+	}
+else
+	{printf("false\n");}
 
 /*
 char username[] = "Liam";
