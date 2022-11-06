@@ -179,14 +179,14 @@ void rsa_decrypt_file(FILE *infile, FILE *outfile, mpz_t n, mpz_t d)
 	int k = mpz_sizeinbase(n, 2);
 	k = (k - 1) / 8;
 	uint8_t * block = calloc(k, sizeof(uint8_t));
+	gmp_fscanf(infile, "%Zx", cm);
 	do
 		{
-		gmp_fscanf(infile, "%Zx", cm);
 		rsa_decrypt(m, cm, d, n);
 		mpz_export(block, j, 1, sizeof(uint8_t), 1, 0, m);
-		for(uint64_t counter = 1; counter <= jv; counter++)
+		for(uint64_t counter = 1; counter < jv; counter++)
 			{
-			fprintf(outfile, "%d", *(block+counter));
+			fprintf(outfile, "%c", *(block+counter));
 			} 
 		}
 	while(gmp_fscanf(infile, "%Zx", cm) == 1);
@@ -220,7 +220,7 @@ rsa_make_priv(d, e, p, q);
 printf("p: %lu, q: %lu, n: %lu, e: %lu, d: %lu\n", mpz_get_ui(p), mpz_get_ui(q), mpz_get_ui(n), mpz_get_ui(e), mpz_get_ui(d));
 
 FILE * message = fopen("message.txt", "w");
-fprintf(message, "hello");
+fprintf(message, "hello, this is a longer message.\nIn flight snacks are not provided.");
 fclose(message);
 
 FILE * message2 = fopen("message.txt", "r");
