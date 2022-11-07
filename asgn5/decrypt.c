@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 				v = 1;
 				break; 
 			case 'h':
-				fprintf(stderr, "./decrypt decodes cyphertext, reading the encrypted message from the input and storing it in the output as specified below. The message is decrypted based off of a private key, which is read via the input specified below.\n    -i <input>   : reads the cyphertext to decode from <input>. Default: stdin\n    -o <output>   : store the decrypted message into <output>. Default: stdout\n    -n <private key file>  : gather the private key information from <private key file>. Default: 'rsa.priv'\n    -v          : Enable verbose output.\n    -h          : Display program synopsis and usage.\n");
+				fprintf(stderr, "./decrypt-dist decodes cyphertext, reading the encrypted message from the input and storing it in the output as specified below. The message is decrypted based off of a private key, which is read via the input specified below.\n    -i <input>   : reads the cyphertext to decode from <input>. Default: stdin\n    -o <output>   : store the decrypted message into <output>. Default: stdout\n    -n <private key file>  : gather the private key information from <private key file>. Default: 'rsa.priv'\n    -v          : Enable verbose output.\n    -h          : Display program synopsis and usage.\n");
 				return 0;
 			}
 		}

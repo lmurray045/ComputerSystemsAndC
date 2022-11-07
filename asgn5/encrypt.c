@@ -71,23 +71,22 @@ int main(int argc, char **argv)
 				v = 1;
 				break; 
 			case 'h':
-				fprintf(stderr, "./encrypt generates encoded cyphertext, reading a message from the input and storing it in the output as specified below. The cyphertext is generated based off of a public key, which is read via the input specified below.\n    -i <input>   : read the message to be encrypted from <input>. Default: stdin\n    -o <output>   : store the generated cyphertext into <output>. Default: stdout\n    -n <public key file>  : gather the public key information from <public key file>. Default: 'rsa.pub'\n    -v          : Enable verbose output.\n    -h          : Display program synopsis and usage.\n");
+				fprintf(stderr, "./encrypt-dist generates encoded cyphertext, reading a message from the input and storing it in the output as specified below. The cyphertext is generated based off of a public key, which is read via the input specified below.\n    -i <input>   : read the message to be encrypted from <input>. Default: stdin\n    -o <output>   : store the generated cyphertext into <output>. Default: stdout\n    -n <public key file>  : gather the public key information from <public key file>. Default: 'rsa.pub'\n    -v          : Enable verbose output.\n    -h          : Display program synopsis and usage.\n");
 				return 0;
 			}
 		}
 	FILE * kfp  = fopen(key, "r");
-	char username[100];
+	char username[10];
 	rsa_read_pub(n, e, s, username, kfp);
 	if(v == 1)
 		{
 		gmp_fprintf(stderr, "username: %s\nuser signature (%d bits): %Zd\nn - modulus (%d bits): %Zd\ne - public exponent (%d bits): %Zd\n", username, mpz_sizeinbase(s,2), s, mpz_sizeinbase(n,2), n, mpz_sizeinbase(e,2), e);
 		}
 	mpz_set_str(expected, username, 62);
-	printf("attempting to verify...\n");
 	if(rsa_verify(expected, s, e, n) != true)
 		{
-		fprintf(stderr, "ERROR: signature could not be verified.\n");
-		return 1;
+		fprintf(stderr, "ERROR: unable to verify user signature.\n");
+		return 0;
 		}
 	FILE * ifp = NULL;
 	FILE * ofp = NULL;

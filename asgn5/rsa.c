@@ -45,10 +45,10 @@ void rsa_make_pub(mpz_t p, mpz_t q, mpz_t n, mpz_t e, uint64_t nbits, uint64_t i
 	mpz_fdiv_q(lam, prod, lam);
 	//find e
 	mpz_t test; mpz_init(test);
-	uint64_t e_top = nbits;
-	uint64_t e_bot = nbits+3;
+	uint64_t e_top = (3 * nbits) / 4;
+	uint64_t e_bot = nbits / 2;
 	mpz_urandomb(e, state, e_top);
-	mpz_setbit(e, e_bot);
+	mpz_add_ui(e, e, e_bot);
 	gcd(test, e, lam);
 	while(mpz_cmp_ui(test, 1) != 0)
 		{
