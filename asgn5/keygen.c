@@ -22,12 +22,17 @@ int main(int argc, char **argv)
 	uint64_t iters = 50;
 	time_t def_seed = time(NULL);
 	uint64_t seed = def_seed;
-	//int v = 0;
-	char pubfilename[] = "rsa.txt";
+	int v = 0;
+	char pubfilename[] = "rsa.pub";
 	char privfilename[] = "rsa.priv";
 	char * pub = &pubfilename[0];
 	char * priv = &privfilename[0];
+	char * newpriv = NULL;
+	char * newpub = NULL;
 	int size;
+	//for checking whether or not to clear arrays
+	int pbclear;
+	int pvclear;
 	
 	int opt = 0;
 	//mpz_t variables
@@ -46,23 +51,31 @@ int main(int argc, char **argv)
 			//if its p, set p param to the argument 
 			case 'b':
 				bits = strtoul(optarg, NULL, 10);
+				break;
 			case 'i':
 				iters = strtoul(optarg, NULL, 10);
+				break;
 			case 's':
 				seed = strtoul(optarg, NULL, 10);
-			/*case 'v':
-				v = 1; */
+				break;
+			case 'v':
+				v = 1;
+				break; 
 			case 'h':
-				printf("TODO: print help to stderror.\n");
+				fprintf(stderr, "./keygen-dist generates a public / private key pair, placing the keys into the public and private key files as specified below. The keys have a modulus (n) whose length is specified in the program options.\n    -s <seed>   : Use <seed> as the random number seed. Default: time()\n    -b <bits>   : Public modulus n must have at least <bits> bits. Default: 1024\n    -i <iters>  : Run <iters> Miller-Rabin iterations for primality testing. Default: 50\n    -n <pbfile> : Public key file is <pbfile>. Default: rsa.pub\n    -d <pvfile> : Private key file is <pvfile>. Default: rsa.priv\n    -v          : Enable verbose output.\n    -h          : Display program synopsis and usage.\n");
 				return 0;
 			case 'd':
 				size = sizeof(optarg);
-				char *newpriv = calloc(size, sizeof(char));
+				newpriv = calloc(size, sizeof(char));
 				priv = strcpy(newpriv, optarg);
+				pvclear = 1;
+				break;
 			case 'n':
 				size = sizeof(optarg);
-				char *newpub = calloc(size, sizeof(char));
+				newpub = calloc(size, sizeof(char));
 				pub = strcpy(newpub, optarg);
+				pbclear = 1;
+				break;
 			}
 		}
 	FILE *pbkey = fopen(pub, "w");
@@ -83,14 +96,20 @@ int main(int argc, char **argv)
 	rsa_write_pub(n, e, s, username, pbkey);
 	rsa_write_priv(n, d, pvkey);
 	
-	//verbose stuff
+	if(v == 1)
+		{
+		gmp_fprintf( stderr, "username: %s\nuser signature (%d bits): %Zd\np (%d bits): %Zd\nq (%d bits): %Zd\nn - modulus (%d bits): %Zd\ne - public exponent (%d bits): %Zd\nd - private exponent (%d bits): %Zd\n", username, mpz_sizeinbase(m,2), m, mpz_sizeinbase(p,2), p, mpz_sizeinbase(q,2), q, mpz_sizeinbase(n,2), n, mpz_sizeinbase(e,2), e, mpz_sizeinbase(d,2), d);
+		}
 
 	fclose(pbkey);
 	fclose(pvkey);
 	randstate_clear();
-	//free(newpriv);
-	//free(newpub);
+	if(pvclear == 1)
+		{free(newpriv);}
+	if(pbclear == 1)
+		{free(newpub);}
 	mpz_clear(p); mpz_clear(q); mpz_clear(n);
 	mpz_clear(e); mpz_clear(d); mpz_clear(s);
 	mpz_clear(m);
+	return 0;
 }
