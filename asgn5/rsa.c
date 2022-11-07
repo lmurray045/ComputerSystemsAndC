@@ -135,7 +135,6 @@ void rsa_encrypt_file(FILE *infile, FILE *outfile, mpz_t n, mpz_t e)
 			}
 		mpz_import(m, (j), 1, sizeof(*block), 1, 0, block);
 		rsa_encrypt(c, m, e, n);
-		gmp_printf("c: %Zx\n", c);
 		gmp_fprintf(outfile, "%Zx\n", c);
 		} 
 	mpz_clear(m); mpz_clear(c);
