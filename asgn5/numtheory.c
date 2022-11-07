@@ -1,13 +1,17 @@
+// clang-format off
+#include <stdio.h> //for print f
+#include <gmp.h> //for gmp library
+// clang-format on
 #include "randstate.h"
 #include "numtheory.h"
 #include "randstate.h"
 #include <stdio.h> //for print f
-#include <gmp.h> //for gmp library
 #include <stdbool.h> //for booleans
 #include <stdint.h> //for int types 
 #include <stdarg.h>
-#include "stdlib.h"
+#include <stdlib.h>
 #include <math.h>
+
 
 
 //GCD Function. Used to compute the greatest common divisor of the

@@ -1,8 +1,10 @@
+// clang-format off
 #include <stdio.h> //for print f
+#include <gmp.h> //for gmp library
+// clang-format on
 #include "randstate.h"
 #include "numtheory.h"
 #include "rsa.h"
-#include <gmp.h> //for gmp library
 #include <stdbool.h> //for booleans
 #include <stdint.h> //for int types 
 #include <stdarg.h>
@@ -19,8 +21,8 @@ int main(int argc, char **argv)
 {
 	int v = 0;
 	//make default in and out files
-	char infile[] = "stdin";
-	char outfile[] = "stdout";
+	char infile[] = "NULL";
+	char outfile[] = "NULL";
 	char * in = &infile[0];
 	char * out = &outfile[0];
 	char * newin = NULL;
@@ -69,7 +71,7 @@ int main(int argc, char **argv)
 				v = 1;
 				break; 
 			case 'h':
-				fprintf(stderr, "./encrypt-dist generates encoded cyphertext, reading a message from the input and storing in in the output as specified below. The cyphertext is generated based off of a public key, which is read via the input specified below.\n    -i <input>   : read the message to be encrypted from <input>. Default: stdin\n    -o <output>   : store the generated cyphertext into <output>. Default: stdout\n    -n <public key file>  : gather the public key information from <public key file>. Default: 'rsa.pub'\n    -v          : Enable verbose output.\n    -h          : Display program synopsis and usage.\n");
+				fprintf(stderr, "./encrypt-dist generates encoded cyphertext, reading a message from the input and storing it in the output as specified below. The cyphertext is generated based off of a public key, which is read via the input specified below.\n    -i <input>   : read the message to be encrypted from <input>. Default: stdin\n    -o <output>   : store the generated cyphertext into <output>. Default: stdout\n    -n <public key file>  : gather the public key information from <public key file>. Default: 'rsa.pub'\n    -v          : Enable verbose output.\n    -h          : Display program synopsis and usage.\n");
 				return 0;
 			}
 		}
