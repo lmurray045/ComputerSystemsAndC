@@ -198,7 +198,7 @@ bool rsa_verify(mpz_t m, mpz_t s, mpz_t e, mpz_t n)
 }
 
 
-int main(void)
+/*int main(void)
 {
 randstate_init(1234567);
 
@@ -208,12 +208,12 @@ mpz_t n; mpz_init(n);
 mpz_t e; mpz_init(e);
 mpz_t d; mpz_init(d);
 //mpz_t s; mpz_init(s); mpz_set_ui(s, 12345);
-/*
+
 mpz_t nt; mpz_init(nt);
 mpz_t e2; mpz_init(e2);
 mpz_t s2; mpz_init(s2); mpz_set_ui(s, 12345);
 mpz_t dt; mpz_init(dt);
-*/
+
 
 uint64_t bits = 64;
 uint64_t iters = ( random() % 500 );
@@ -261,7 +261,7 @@ if(rsa_verify(m2, s, e, n) == true)
 else
 	{printf("false\n");}
 
-/*
+
 char username[] = "Liam";
 //public keys
 FILE *pbfile = fopen("pbfile.txt", "w");
@@ -295,8 +295,7 @@ rsa_write_priv(nt, dt, pvfile2);
 
 fclose(pvfile2);
 fclose(pvfile);
-*/
 
 randstate_clear();
-}
+} */
 
