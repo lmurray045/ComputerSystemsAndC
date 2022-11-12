@@ -21,6 +21,12 @@ BitVector *bv_create(uint32_t length)
 	return bv;
 }
 
+void bv_delete(BitVector **bv){
+	free((*bv)->vector);
+	free(*bv);
+	return;
+}
+
 //bit vector print; prints out the bit vector
 void bv_print(BitVector *bv)
 {
@@ -96,5 +102,5 @@ int main()
 	bv_print(bv);
 	printf("get bit 18: %d\n", bv_get_bit(bv, 18));
 	printf("get bit 7: %d\n", bv_get_bit(bv, 7));
-	
+	bv_delete(&bv);
 }
