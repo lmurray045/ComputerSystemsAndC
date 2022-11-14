@@ -86,7 +86,7 @@ uint8_t bv_get_bit(BitVector *bv, uint32_t i){
 		return 0;
 		}
 }
-
+/*
 int main()
 {
 	BitVector* bv = bv_create(20);
@@ -104,3 +104,4 @@ int main()
 	printf("get bit 7: %d\n", bv_get_bit(bv, 7));
 	bv_delete(&bv);
 }
+*/
