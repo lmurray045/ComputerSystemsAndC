@@ -119,7 +119,7 @@ void ll_stats(uint32_t *n_seeks, uint32_t *n_links){
 	*n_links = links;
 	return;
 }
- 
+ /*
 int main(void){
 	LinkedList *ll = ll_create(true);
 	//printf("list created\n");
@@ -146,5 +146,5 @@ int main(void){
 	ll_delete(&ll);
 	return 0;
 }
-
+*/
 

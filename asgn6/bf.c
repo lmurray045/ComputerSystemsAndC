@@ -1,4 +1,5 @@
 #include "bv.h"
+#include "bf.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -27,7 +28,7 @@ struct BloomFilter {
 	BitVector *filter;
 };
 
-typedef struct BloomFilter BloomFilter;
+//typedef struct BloomFilter BloomFilter;
 
 BloomFilter *bf_create(uint32_t size) {
 	BloomFilter *bf = (BloomFilter *) malloc(sizeof(BloomFilter));
