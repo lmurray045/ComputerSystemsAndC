@@ -1,6 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "node.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 //string copy function
 char * stringcopy(char * string){
@@ -20,7 +20,12 @@ char * stringcopy(char * string){
 
 Node *node_create(char *oldspeak, char *newspeak){
 	Node *nd = (Node *)malloc(sizeof(Node));
-	nd->oldspeak = stringcopy(oldspeak);
+	if(oldspeak == NULL){
+		nd->oldspeak = NULL;
+		}
+	else{
+		nd->oldspeak = stringcopy(oldspeak);
+		}
 	if(newspeak == NULL){
 		nd->newspeak = NULL;
 	}
@@ -34,6 +39,10 @@ Node *node_create(char *oldspeak, char *newspeak){
 
 //node print: prints node.
 void node_print(Node *n){
+	if(n == NULL){
+		printf("ERROR: Node Not Found. Pointer passed is NULL.\n");
+		return;
+	}
 	if(n->newspeak == NULL){
 		printf("%s\n", n->oldspeak);
 		return;
@@ -49,7 +58,7 @@ void node_delete(Node **n){
 	return;
 }
 
-
+/*
 int main(void){
 	char hello[] = "hello world!";
 	char world[] = "Goodbye...";
@@ -58,6 +67,6 @@ int main(void){
 	Node *nd = node_create(h, w);
 	node_print(nd);
 	node_delete(&nd);
-	return 1;
+	return 0;
 }
-
+*/
