@@ -103,7 +103,26 @@ uint32_t ht_count(HashTable *ht){
 	return counter;
 }
 
+//hash table stats. Sets pointers to stat values
+void ht_stats(HashTable *ht, uint32_t *nk, uint32_t *nh, uint32_t *nm, uint32_t *ne){
+	*nk = ht->n_keys;
+	*nh = ht->n_hits;
+	*nm = ht->n_misses;
+	*ne = ht->n_examined;
+	return;
+}
 
+//hash table delete
+void ht_delete(HashTable **ht){
+	for(uint32_t i = 0; i < ht_size(*(ht)); i++){
+		if(*((*ht)->lists + i) != NULL){
+			ll_delete(((*ht)->lists + i));
+		}
+	}
+	free(*((*ht)->lists));
+	free(*ht);
+	return;
+}
 
 int main(void){
 	HashTable * ht = ht_create(10, true);
@@ -126,6 +145,13 @@ int main(void){
 	printf("hash table hits: %u\n", ht->n_hits);
 	printf("hash table misses: %u\n", ht->n_misses);
 	printf("hash table examined: %u\n", ht->n_examined);
+	uint32_t k;
+	uint32_t h;
+	uint32_t m;
+	uint32_t e;
+	ht_stats(ht, &k, &h, &m, &e);
+	printf("stats: %u, %u, %u, %u \n", k, h, m, e);
+	ht_delete(&ht);
 	return 0;
 }
 
