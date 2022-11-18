@@ -27,12 +27,9 @@ void parser_delete(Parser **p){
 //parser next word
 bool next_word(Parser *p, char *word){
 	int chnum = -1;
-	while(isalnum(chnum) == 0){
+	while(isalnum(chnum) == 0 && chnum != 45 && chnum != 39){
 		 chnum = fgetc(p->f);
-		 printf("chnum = %d\n", chnum);
-		 printf("is alpha num: %d\n", isalnum(chnum));
-		 if(isalnum(chnum) != 0){
-		 	printf("its a word\n");
+		 if(isalnum(chnum) != 0 || chnum == 45 || chnum == 39){
 		 	chnum = tolower(chnum);
 		 	*word = chnum;
 		 }
@@ -42,8 +39,7 @@ bool next_word(Parser *p, char *word){
 	}
 	int i;
 	chnum = fgetc(p->f);
-	for(i = 1; isalnum(chnum) != 0; i++){
-		printf("letter: %d\n", chnum);
+	for(i = 1; (isalnum(chnum) != 0 || chnum == 45 || chnum == 39); i++){
 		chnum = tolower(chnum);
 		*(word+i) = chnum;
 		chnum = fgetc(p->f);
@@ -57,14 +53,9 @@ int main(void){
 	Parser *p = parser_create(fp);
 	char word[100];
 	char * wp = &word[0];
-	next_word(p, wp);
-	printf("Parsed Word: %s\n", wp);
-	next_word(p, wp);
-	printf("Parsed Word: %s\n", wp);
-	next_word(p, wp);
-	printf("Parsed Word: %s\n", wp);
-	next_word(p, wp);
-	printf("Parsed Word: %s\n", wp);
+	while(next_word(p, wp) == true){
+		printf("Parsed Word: %s\n", wp);
+	}
 	fclose(fp);
 	parser_delete(&p);
 	return 0;
