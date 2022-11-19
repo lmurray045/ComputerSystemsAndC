@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "parser.h"
 #define MAX_PARSER_LINE_LENGTH 1000
 
