@@ -52,7 +52,6 @@ void ht_print(HashTable *ht){
 //hash table insert
 void ht_insert(HashTable *ht, char *oldspeak, char *newspeak){
 	uint64_t addr = hash(ht->salt, oldspeak) % ht->size;
-	printf("address of hash: %lu\n", addr);
 	if(*(ht->lists + addr) == NULL){
 		*(ht->lists + addr) = ll_create(ht->mtf);
 		ll_insert(*((ht->lists + addr)), oldspeak, newspeak);
@@ -73,17 +72,17 @@ Node *ht_lookup(HashTable *ht, char *oldspeak){
 	uint64_t addr = hash(ht->salt, oldspeak) % ht->size;
 	if(*(ht->lists + addr) == NULL){
 		ht->n_misses += 1;
-		ht->n_examined = links;
+		ll_stats(NULL, &ht->n_examined);
 		return NULL;
 	}
 	Node* nd = ll_lookup(*(ht->lists + addr), oldspeak);
 	if(nd == NULL){
 		ht->n_misses += 1;
-		ht->n_examined = links;
+		ll_stats(NULL, &ht->n_examined);
 		return NULL;
 	}
 	ht->n_hits += 1;
-	ht->n_examined = links;
+	ll_stats(NULL, &ht->n_examined);
 	return nd;
 }
 
@@ -123,7 +122,7 @@ void ht_delete(HashTable **ht){
 	free(*ht);
 	return;
 }
-
+/*
 int main(void){
 	HashTable * ht = ht_create(10, true);
 	printf("hash table created \n");
@@ -154,4 +153,4 @@ int main(void){
 	ht_delete(&ht);
 	return 0;
 }
-
+*/

@@ -104,7 +104,7 @@ void bf_stats(BloomFilter *bf, uint32_t *nk, uint32_t *nh, uint32_t *nm, uint32_
 	return;
 }
 	
-
+/*
 int main(void){
 	BloomFilter *bf = bf_create(64);
 	bf_print(bf);
@@ -134,3 +134,4 @@ int main(void){
 	printf("examined: %u\n", e);
 	return 0;
 }
+*/

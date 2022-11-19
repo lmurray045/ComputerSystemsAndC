@@ -47,7 +47,7 @@ bool next_word(Parser *p, char *word){
 	*(word+i) = '\0';
 	return true;
 }
-
+/*
 int main(void){
 	FILE *fp = fopen("Parsefile.txt", "r");
 	Parser *p = parser_create(fp);
@@ -60,3 +60,5 @@ int main(void){
 	parser_delete(&p);
 	return 0;
 }
+*/
+
