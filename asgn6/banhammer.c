@@ -26,8 +26,8 @@ int main(int argc, char **argv){
 			{
 			//if its p, set p param to the argument 
 			case 'h':
-				helpprint = 1;
-				break;
+				printf("Usage: ./banhammer [options]\n  ./banhammer will read in words from stdin, identify any badspeak or old speak and output an\n  appropriate punishment message. The badspeak and oldspeak (with the newspeak translation) \n  that caused the punishment will be printed after the message. If statistics are enabled\n  punishment messages are suppressed and only statistics will be printed.\n    -t <ht_size>: Hash table size set to <ht_size>. (default: 10000)\n    -f <bf_size>: Bloom filter size set to <bf_size>. (default 2^19)\n    -s          : Enables the printing of statistics.\n    -m          : Enables move-to-front rule.\n    -h          : Display program synopsis and usage.\n");
+				return 0;
 			case 't':
 				htsize = strtoul(optarg, NULL, 10);
 				break;
