@@ -68,34 +68,33 @@ int main(int argc, char **argv){
 		ht_insert(ht, word, new);
 	}
 	fclose(ns);
-	printf("loop two exited\n");
+	//printf("loop two exited\n");
 	FILE * std = stdin;
 	Parser* censor = parser_create(std);
 	LinkedList * crimes = ll_create(false);
 	LinkedList * mistakes = ll_create(false);
-	printf("next loop\n");
 	while(next_word(censor, word) == true){
-		printf("first if\n");
+		//printf("first if\n");
 		if(bf_probe(bf, word) == true){
-			printf("second if\n");
-			printf("word: %s\n", word);
+			//printf("second if\n");
+			//printf("word: %s\n", word);
 			Node * banned = ht_lookup(ht, word);
-			printf("banned made\n");
+			//printf("banned made\n");
 			if(banned != NULL){
-				printf("third if\n");
+				//printf("third if\n");
 				if((banned->newspeak) != NULL){
-					printf("final\n");
+					//printf("final\n");
 					ll_insert(mistakes, word, banned->newspeak);
 				}
 				else{
-					printf("first else\n");
+					//printf("first else\n");
 					ll_insert(crimes, word, NULL);
 				}
 			}
 			else{}
 		}
 	}
-	printf("check loop exited\n");
+	//printf("check loop exited\n");
 	if(ll_length(crimes) != 0 && ll_length(mistakes) != 0){
 		printf("%s", mixspeak_message);
 		ll_print(crimes);
@@ -115,7 +114,7 @@ int main(int argc, char **argv){
 	//ht_print(ht);
 	
 	//so no errors
-	printf("%d\n", helpprint);
-	printf("%d\n", statprint);
+	helpprint = statprint;
+	statprint = helpprint;
 	return 0;
 }

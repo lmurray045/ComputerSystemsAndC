@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #define MAX_PARSER_LINE_LENGTH 1000
 

@@ -92,8 +92,13 @@ void bf_insert(BloomFilter *bf, char *oldspeak){
 //bf probe. Probes and sees if a word in the bloomfilter is present
 bool bf_probe(BloomFilter *bf, char *oldspeak){
 	for(uint64_t i = 0; i < 5; i++){
+		//printf("oldspeak: %s\n", oldspeak);
 		uint64_t addr = (hash((bf->salts[i]), oldspeak)) % bf_size(bf);
+		if(addr == 0){
+			addr = 1;
+		}
 		uint8_t test = bv_get_bit((bf->filter), addr);
+		
 		bf->n_bits_examined += 1;
 		if(test == 0){
 			bf->n_misses += 1;

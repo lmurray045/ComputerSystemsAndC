@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define N_HASHES 5
+
 typedef struct BloomFilter BloomFilter;
 
 BloomFilter *bf_create(uint32_t size);

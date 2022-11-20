@@ -4,8 +4,8 @@
 #include <stdio.h>
 
 //seeks and links
-uint64_t seeks;
-uint64_t links;
+uint32_t seeks;
+uint32_t links;
 
 //linked list code
 struct LinkedList {
@@ -116,9 +116,7 @@ uint32_t ll_length(LinkedList *ll){
 //linked list stats
 void ll_stats(uint32_t *n_seeks, uint32_t *n_links){
 	*n_seeks = seeks;
-	printf("seeks\n");
 	*n_links = links;
-	printf("links\n");
 	return;
 }
  /*
