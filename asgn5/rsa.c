@@ -53,7 +53,7 @@ void rsa_make_pub(mpz_t p, mpz_t q, mpz_t n, mpz_t e, uint64_t nbits, uint64_t i
 	while(mpz_cmp_ui(test, 1) != 0)
 		{
 		mpz_urandomb(e, state, e_top);
-		mpz_add_ui(e, e, e_bot);
+	s	mpz_add_ui(e, e, e_bot);
 		gcd(test, e, lam);
 		}
 	mpz_mul(n, p, q);

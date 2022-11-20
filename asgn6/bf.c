@@ -74,8 +74,17 @@ uint32_t bf_size(BloomFilter *bf){
 void bf_insert(BloomFilter *bf, char *oldspeak){
 	bf->n_keys += 1;
 	for(uint64_t i = 0; i < 5; i++){
+		//printf("addr calc\n");
+		//printf("string in question: %s\n", oldspeak);
+		//printf("hash: %lu \n", hash((bf->salts[i]), oldspeak));
 		uint64_t addr = (hash((bf->salts[i]), oldspeak)) % bf_size(bf);
+		//printf("size: %u\n", bf_size(bf));
+		//printf("setting bit, addr: %lu\n", addr);
+		if(addr == 0){
+			addr = 1;
+		}
 		bv_set_bit((bf->filter), addr);
+		//printf("done\n");
 	}
 	return;
 }

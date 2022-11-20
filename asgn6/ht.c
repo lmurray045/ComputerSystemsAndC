@@ -70,19 +70,28 @@ void ht_insert(HashTable *ht, char *oldspeak, char *newspeak){
 //hash table lookup
 Node *ht_lookup(HashTable *ht, char *oldspeak){
 	uint64_t addr = hash(ht->salt, oldspeak) % ht->size;
+	printf("addr: %lu\n", addr);
 	if(*(ht->lists + addr) == NULL){
 		ht->n_misses += 1;
 		ll_stats(NULL, &ht->n_examined);
 		return NULL;
 	}
+	printf("not null\n");
 	Node* nd = ll_lookup(*(ht->lists + addr), oldspeak);
+	printf("node made\n");
+	node_print(nd);
 	if(nd == NULL){
 		ht->n_misses += 1;
 		ll_stats(NULL, &ht->n_examined);
 		return NULL;
 	}
+	printf("node is real\n");
 	ht->n_hits += 1;
-	ll_stats(NULL, &ht->n_examined);
+	printf("awwagga\n");
+	uint64_t * expoint = &ht->n_examined;
+	uint64_t *nullpoint = NULL;
+	ll_stats(nullpoint, expoint);
+	printf("stats made\n");
 	return nd;
 }
 

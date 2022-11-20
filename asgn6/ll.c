@@ -116,7 +116,9 @@ uint32_t ll_length(LinkedList *ll){
 //linked list stats
 void ll_stats(uint32_t *n_seeks, uint32_t *n_links){
 	*n_seeks = seeks;
+	printf("seeks\n");
 	*n_links = links;
+	printf("links\n");
 	return;
 }
  /*

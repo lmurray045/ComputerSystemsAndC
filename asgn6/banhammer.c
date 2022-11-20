@@ -10,12 +10,13 @@
 #include "bf.h"
 #include "parser.h"
 #include "city.h"
+#include "messages.h"
 #define OPTIONS "ht:f:sm"
 
 int main(int argc, char **argv){
 	int helpprint = 0;
 	uint32_t htsize = 10000;
-	uint32_t bfsize = pow(2, 19);
+	uint32_t bfsize = pow(2, 10);
 	bool mtf = false;
 	int statprint = 0;
 	int opt = 0;
@@ -49,18 +50,18 @@ int main(int argc, char **argv){
 	char *nullnewspeak = NULL;
 	char wordbuf[1001];
 	char *word = &wordbuf[0];
-	printf("loop one\n");
+	//int counter = 0;
 	while(next_word(badparse, word) == true){
 		bf_insert(bf, word);
 		ht_insert(ht, word, nullnewspeak);
+		//counter += 1;
+		//printf("counter: %d\n", counter);
 	}
-	printf("loop one exited\n");
 	fclose(bs);
 	FILE *ns = fopen("newspeak.txt", "r");
 	Parser *newparse = parser_create(ns);
 	char newword[1000];
 	char * new = &newword[0];
-	printf("loop two\n");
 	while(next_word(newparse, word) == true){
 		next_word(newparse, new);
 		bf_insert(bf, word);
@@ -68,8 +69,50 @@ int main(int argc, char **argv){
 	}
 	fclose(ns);
 	printf("loop two exited\n");
-	bf_print(bf);
-	ht_print(ht);
+	FILE * std = stdin;
+	Parser* censor = parser_create(std);
+	LinkedList * crimes = ll_create(false);
+	LinkedList * mistakes = ll_create(false);
+	printf("next loop\n");
+	while(next_word(censor, word) == true){
+		printf("first if\n");
+		if(bf_probe(bf, word) == true){
+			printf("second if\n");
+			printf("word: %s\n", word);
+			Node * banned = ht_lookup(ht, word);
+			printf("banned made\n");
+			if(banned != NULL){
+				printf("third if\n");
+				if((banned->newspeak) != NULL){
+					printf("final\n");
+					ll_insert(mistakes, word, banned->newspeak);
+				}
+				else{
+					printf("first else\n");
+					ll_insert(crimes, word, NULL);
+				}
+			}
+			else{}
+		}
+	}
+	printf("check loop exited\n");
+	if(ll_length(crimes) != 0 && ll_length(mistakes) != 0){
+		printf("%s", mixspeak_message);
+		ll_print(crimes);
+		ll_print(mistakes);
+	}
+	else if(ll_length(crimes) != 0 && ll_length(mistakes) == 0){
+		printf("%s", badspeak_message);
+		ll_print(crimes);
+	}
+	else if(ll_length(crimes) == 0 && ll_length(mistakes) != 0){
+		printf("%s", badspeak_message);
+		ll_print(mistakes);
+	}
+	
+	
+	//bf_print(bf);
+	//ht_print(ht);
 	
 	//so no errors
 	printf("%d\n", helpprint);
