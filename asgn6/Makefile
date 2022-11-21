@@ -12,6 +12,9 @@ banhammer: bf.o bv.o ht.o banhammer.o node.o ll.o parser.o city.o
 
 clean:
 	rm -f bf bv ht banhammer node ll parser city *.o
+	
+spotless: clean
+	rm -f banhammer
 
 format:
-	clang-format -i -style=file *.[ch]
+	clang-format -i -style=file bf.c bv.c ht.c banhammer.c node.c ll.c parser.c
