@@ -16,7 +16,7 @@ struct LinkedList {
 };
 
 // string compare function
-bool stringcompare(char *str1, char *str2) {
+static bool stringcompare(char *str1, char *str2) {
   uint64_t i;
   for (i = 0; *(str1 + i) != '\0'; i++) {
     if (*(str1 + i) != *(str2 + i)) {

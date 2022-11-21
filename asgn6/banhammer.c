@@ -14,7 +14,6 @@
 #define OPTIONS "ht:f:sm"
 
 int main(int argc, char **argv) {
-  int helpprint = 0;
   uint32_t htsize = 10000;
   uint32_t bfsize = pow(2, 19);
   bool mtf = false;
@@ -103,6 +102,7 @@ int main(int argc, char **argv) {
       }
     }
   }
+  fclose(std);
   // printf("check loop exited\n");
   if (statprint == 0) {
     if (ll_length(crimes) != 0 && ll_length(mistakes) != 0) {
@@ -129,7 +129,6 @@ int main(int argc, char **argv) {
     uint32_t bf_examined = 0;
     ht_stats(ht, &ht_keys, &ht_hits, &ht_misses, &ht_examined);
     bf_stats(bf, &bf_keys, &bf_hits, &bf_misses, &bf_examined);
-    ht_keys = bf_keys;
     // uint32_t ht_probes = ht_hits + ht_misses;
     float bepm;
     float fb = bf_examined;
@@ -140,7 +139,7 @@ int main(int argc, char **argv) {
     } else {
       bepm = be / bf_misses;
     }
-    float falsepos = ht_misses / bf_hits;
+    float falsepos = ht_misses / fh;
     float bfc = bf_count(bf);
     float bfs = bf_size(bf);
     float bf_load = (bfc / bfs);
@@ -163,8 +162,13 @@ int main(int argc, char **argv) {
   // bf_print(bf);
   // ht_print(ht);
 
-  // so no errors
-  helpprint = statprint;
-  statprint = helpprint;
+    ht_delete(&ht);
+    bf_delete(&bf);
+    ll_delete(&crimes);
+    ll_delete(&mistakes);
+    parser_delete(&badparse);
+    parser_delete(&newparse);
+    parser_delete(&censor);
+  
   return 0;
 }

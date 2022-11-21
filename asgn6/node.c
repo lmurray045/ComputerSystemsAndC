@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 // string copy function
-char *stringcopy(char *string) {
+static char *stringcopy(char *string) {
   int j;
   for (j = 0; *(string + j) != 0; j++) {
   }
