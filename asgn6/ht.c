@@ -55,13 +55,13 @@ void ht_insert(HashTable *ht, char *oldspeak, char *newspeak){
 	if(*(ht->lists + addr) == NULL){
 		*(ht->lists + addr) = ll_create(ht->mtf);
 		ll_insert(*((ht->lists + addr)), oldspeak, newspeak);
-		ht->n_keys += 1;
+		//ht->n_keys += 1;
 	}
 	else{	
 		uint32_t temp = ll_length(*(ht->lists + addr));
 		ll_insert(*(ht->lists + addr), oldspeak, newspeak);
 		if((ll_length(*(ht->lists + addr))) != temp){
-			ht->n_keys += 1;
+			//ht->n_keys += 1;
 		}
 	}
 	return;
@@ -107,6 +107,11 @@ uint32_t ht_count(HashTable *ht){
 
 //hash table stats. Sets pointers to stat values
 void ht_stats(HashTable *ht, uint32_t *nk, uint32_t *nh, uint32_t *nm, uint32_t *ne){
+	for(uint32_t i = 0; i < ht->size; i++){
+		if(*(ht->lists + i) != NULL){
+			ht->n_keys += ll_length(*(ht->lists + i));
+		}
+	}
 	*nk = ht->n_keys;
 	*nh = ht->n_hits;
 	*nm = ht->n_misses;

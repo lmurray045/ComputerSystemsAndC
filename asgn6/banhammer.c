@@ -16,7 +16,7 @@
 int main(int argc, char **argv){
 	int helpprint = 0;
 	uint32_t htsize = 10000;
-	uint32_t bfsize = pow(2, 10);
+	uint32_t bfsize = pow(2, 19);
 	bool mtf = false;
 	int statprint = 0;
 	int opt = 0;
@@ -95,20 +95,64 @@ int main(int argc, char **argv){
 		}
 	}
 	//printf("check loop exited\n");
-	if(ll_length(crimes) != 0 && ll_length(mistakes) != 0){
-		printf("%s", mixspeak_message);
-		ll_print(crimes);
-		ll_print(mistakes);
-	}
-	else if(ll_length(crimes) != 0 && ll_length(mistakes) == 0){
-		printf("%s", badspeak_message);
-		ll_print(crimes);
-	}
-	else if(ll_length(crimes) == 0 && ll_length(mistakes) != 0){
-		printf("%s", badspeak_message);
-		ll_print(mistakes);
+	if(statprint == 0){
+		if(ll_length(crimes) != 0 && ll_length(mistakes) != 0){
+			printf("%s", mixspeak_message);
+			ll_print(crimes);
+			ll_print(mistakes);
+		}
+		else if(ll_length(crimes) != 0 && ll_length(mistakes) == 0){
+			printf("%s", badspeak_message);
+			ll_print(crimes);
+		}
+		else if(ll_length(crimes) == 0 && ll_length(mistakes) != 0){
+			printf("%s", badspeak_message);
+			ll_print(mistakes);
+		}
 	}
 	
+	else{
+		uint32_t ht_keys = 0;
+		uint32_t ht_hits = 0;
+		uint32_t ht_misses = 0;
+		uint32_t ht_examined = 0;
+		uint32_t bf_keys = 0;
+		uint32_t bf_hits = 0;
+		uint32_t bf_misses = 0;
+		uint32_t bf_examined = 0;
+		ht_stats(ht, &ht_keys, &ht_hits, &ht_misses, &ht_examined);
+		bf_stats(bf, &bf_keys, &bf_hits, &bf_misses, &bf_examined);
+		ht_keys = bf_keys;
+		//uint32_t ht_probes = ht_hits + ht_misses;
+		float bepm;
+		float fb = bf_examined;
+		float fh = bf_hits;
+		float be = (fb - (N_HASHES * fh));
+		if(bf_misses == 0){
+			bepm = 0.0000;
+		}
+		else{
+			bepm = be / bf_misses;
+		}
+		float falsepos = ht_misses / bf_hits;
+		float bfc = bf_count(bf);
+		float bfs = bf_size(bf);
+		float bf_load = (bfc / bfs);
+		float fht = ht_examined;
+		float avg_seek_len = fht / (ht_hits + ht_misses);
+		printf("ht keys: %u\n", ht_keys);
+		printf("ht hits: %u\n", ht_hits);
+		printf("ht misses: %u\n", ht_misses);
+		printf("ht probes: %u\n", ht_examined);
+		printf("bf keys: %u\n", bf_keys);
+		printf("bf hits: %u\n", bf_hits);
+		printf("bf misses: %u\n", bf_misses);
+		printf("bf bits examined: %u\n", bf_examined);
+		printf("Bits examined per miss: %.6f\n", bepm);
+		printf("False Positives: %.6f\n", falsepos);
+		printf("Average seek length: %.6f\n", avg_seek_len);
+		printf("Bloom filter load: %.6f\n", bf_load);
+	}
 	
 	//bf_print(bf);
 	//ht_print(ht);

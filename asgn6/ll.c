@@ -92,9 +92,31 @@ Node *ll_lookup(LinkedList *ll, char *oldspeak){
  	return nl;
 }
 
+//the same lookup function, however it does not update links/seeks. Used for insert function
+static Node *ll_no_cost_lookup(LinkedList *ll, char *oldspeak){
+	Node *start = ll->head->next;
+ 	for(uint64_t i = 0; i != ll->length; i++){
+ 		if(stringcompare(start->oldspeak, oldspeak) == 1){
+ 			if(ll->mtf == true){
+ 				start->next->prev = start->prev;
+ 				start->prev->next = start->next;
+ 				Node* headnext = ll->head->next;
+ 				ll->head->next = start;
+ 				start->next = headnext;
+ 				start->prev = ll->head;
+ 				headnext->prev = start;
+ 				}
+ 			return start;
+ 			}
+ 		start = start->next;
+ 	}
+ 	Node *nl = NULL;
+ 	return nl;
+}
+
 //linked list insert
 void ll_insert(LinkedList *ll, char *oldspeak, char *newspeak){
-	if(ll_lookup(ll, oldspeak) != NULL){
+	if(ll_no_cost_lookup(ll, oldspeak) != NULL){
 		return;
 	}
 	Node *nd = node_create(oldspeak, newspeak);

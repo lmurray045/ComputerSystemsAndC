@@ -108,6 +108,16 @@ bool bf_probe(BloomFilter *bf, char *oldspeak){
 	bf->n_hits += 1;
 	return true;
 }
+//bf count: returns the number of set bits in a bloomfilter
+uint32_t bf_count(BloomFilter *bf){
+	uint32_t counter = 0;
+	for(uint32_t i = 1; i <= bf_size(bf); i++){
+		if(bv_get_bit(bf->filter, i) != 0){
+			counter++;
+		}
+	}
+	return counter;
+}
 
 //bf stats. Sets pointers to respective stat values.
 void bf_stats(BloomFilter *bf, uint32_t *nk, uint32_t *nh, uint32_t *nm, uint32_t *ne){
