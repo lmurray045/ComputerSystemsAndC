@@ -35,7 +35,6 @@ void pq_print(PriorityQueue *q){
 		node_print(next);
 		start = next;
 	}
-	printf("success\n");
 	return;
 }
 
@@ -91,17 +90,46 @@ bool enqueue(PriorityQueue *q, Node *n){
 	return false;
 }
 
+//dequeue: remove item from queue
+bool dequeue(PriorityQueue *q, Node **n){
+	if(pq_empty(q) == true){
+		return false;
+	}
+	*n = q->head->right;
+	q->head->right = q->head->right->right;
+	q->head->right->right->left = q->head;
+	q->elements -= 1;
+	return true;
+}
 
+//pq delete: deletes a priority queue
+void pq_delete(PriorityQueue **q){
+	Node * start = (*q)->head;
+	for(uint64_t i = 0; i <= pq_size(*q) + 1; i++){
+		Node * next = start->right;
+		node_delete(&start);
+		start = next;
+	}
+	free(*q);
+	return;
+}
 
 int main(){
 	PriorityQueue * pq = pq_create(10);
 	Node * n1 = node_create('A', 12);
 	Node * n2 = node_create('B', 10);
 	Node * n3 = node_create('C', 8);
+	Node * n4 = node_create('w', 1);
 	enqueue(pq, n1);
 	enqueue(pq, n2);
 	enqueue(pq, n3);
 	printf("pq elements: %lu\n", pq->elements);
 	pq_print(pq);
+	dequeue(pq, &n4);
+	printf("Node 4: ");
+	node_print(n4);
+	printf("pq elements: %lu\n", pq->elements);
+	pq_print(pq);
+	pq_delete(&pq);
 	return 0;
 }
