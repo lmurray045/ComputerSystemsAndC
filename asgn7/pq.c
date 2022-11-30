@@ -20,8 +20,8 @@ PriorityQueue *pq_create(uint32_t capacity){
 	PriorityQueue * pq = (PriorityQueue *)malloc(sizeof(PriorityQueue));
 	pq->capacity = capacity;
 	pq->elements = 0;
-	pq->head = node_create(-1, 0); //lowest possible frequency
-	pq->tail = node_create(-1, 257); //highest possible frequency
+	pq->head = node_create('H', 0); //lowest possible frequency
+	pq->tail = node_create('T', -1); //highest possible frequency
 	pq->tail->left = pq->head;
 	pq->head->right = pq->tail;
 	return pq;
