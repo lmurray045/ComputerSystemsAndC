@@ -89,12 +89,23 @@ bool code_push_bit(Code *c, uint8_t bit){
 	c->top += 1;
 	return true;
 }
-/*
+
 //pop bit: removes a bit from the stack
 bool code_pop_bit(Code *c, uint8_t *bit){
-
+	if(code_empty(c) == true){
+		return false;
+	}
+	if(code_get_bit(c, c->top) == true){
+		*bit = 1;
+	}
+	else{
+		*bit = 0;
+	}
+	code_clr_bit(c, c->top);
+	c->top -= 1;
+	return true;
 }
-*/
+
 
 //prints out the bits in the given code object
 void code_print(Code *c){
@@ -114,11 +125,13 @@ int main(void){
 	code_push_bit(&c, 0);
 	code_push_bit(&c, 1);
 	code_push_bit(&c, 1);
-	printf("array: [%d], [%d], [%d]\n", (&c)->bits[0], (&c)->bits[1], (&c)->bits[2]);
 	code_print(&c);
-	printf("full: %d\n", code_full(&c));
-	printf("empty: %d\n", code_empty(&c));
-	code_clr_bit(&c, 5);
+	uint8_t bitstore = 2;
+	code_pop_bit(&c, &bitstore);
+	printf("popped bit: %d\n", bitstore);
+	code_print(&c);
+	code_pop_bit(&c, &bitstore);
+	printf("popped bit: %d\n", bitstore);
 	code_print(&c);
 	return 0;
 }
