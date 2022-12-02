@@ -109,12 +109,12 @@ bool code_pop_bit(Code *c, uint8_t *bit){
 
 //prints out the bits in the given code object
 void code_print(Code *c){
-	for(uint64_t i = 0; i <= c->top; i++){
+	for(uint64_t i = 0; i < c->top; i++){
 		printf("%d", code_get_bit(c, i));
 	}
-	if(c->top != 0){
-		printf("\n");
-	}
+	//if(c->top != 0){
+	printf("\n");
+	//}
 }
 /*
 int main(void){

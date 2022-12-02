@@ -101,8 +101,6 @@ void write_code(int outfile, Code *c){
 			bit_num = ~bit_num;
 			wtbitvec[byte_address] = wtbitvec[byte_address] & bit_num;
 		}
-		printf("index: %lu\n", wtdex);
-		printf("buffer: %d\n", wtbitvec[0]);
 		wtdex++;
 		if(wtdex == (1 * 8)){
 			write_bytes(outfile, &wtbitvec[0], 1);
@@ -123,16 +121,16 @@ void flush_codes(int outfile){
 	}
 	return;
 }
-
+/*
 int main(void){
-	/*uint8_t buf[100];
+	uint8_t buf[100];
 	uint8_t *bufpoint = &buf[0];
 	printf("\n");
 	printf("%d\n", counter);
 	//printf("bytes read: %d\n", read_bytes(fd, bufpoint, 100));
 	//printf("buffer contents: %s\n", buf);
 	close(fd);
-	*/
+	
 	Code c1 = code_init();
 	code_push_bit(&c1, 1);
 	code_push_bit(&c1, 0);
@@ -173,3 +171,4 @@ int main(void){
 	printf("\n");
 	return 0;
 }
+*/

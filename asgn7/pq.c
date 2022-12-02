@@ -151,7 +151,7 @@ void pq_delete(PriorityQueue **q){
 	free(*q);
 	return;
 }
-
+/*
 int main(){
 	PriorityQueue * pq = pq_create(10);
 	Node * n1 = node_create('H', 50);
@@ -192,4 +192,4 @@ int main(){
 	pq_delete(&pq);
 	return 0;
 }
-
+*/
