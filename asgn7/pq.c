@@ -6,11 +6,48 @@
 #include <inttypes.h>
 #include "node.h"
 #include "pq.h"
+
+//priority queue nodes, called "Housing". They hold the nodes for the pq
+
+typedef struct Housing Housing;
+
+struct Housing{
+	Housing * left;
+	Housing * right;
+	uint64_t frequency;
+	Node * node;
+};
+
+//create a housing object
+Housing * housing_create(Node *n){
+	Housing * h = (Housing *)malloc(sizeof(Housing));
+	h->left = NULL;
+	h->right = NULL;
+	h->node = n;
+	h->frequency = n->frequency;
+	return h;
+}
+
+//delete a housing object
+void housing_delete(Housing ** h){
+	node_delete(&((*h)->node));
+	free(*h);
+	*h = NULL;
+	return;
+}
+
+//housing print
+void housing_print(Housing * h){
+	node_print(h->node);
+	return;
+}
+
+
 //implementation of the priority queue abstract data type
 
 struct PriorityQueue {
-    Node *head;
-    Node *tail;
+    Housing *head;
+    Housing *tail;
     uint64_t capacity;
     uint64_t elements;
 };
@@ -20,8 +57,8 @@ PriorityQueue *pq_create(uint32_t capacity){
 	PriorityQueue * pq = (PriorityQueue *)malloc(sizeof(PriorityQueue));
 	pq->capacity = capacity;
 	pq->elements = 0;
-	pq->head = node_create('H', 0); //lowest possible frequency
-	pq->tail = node_create('T', -1); //highest possible frequency
+	pq->head = housing_create(node_create('/', 0)); //lowest possible frequency
+	pq->tail = housing_create(node_create('\\', -1)); //highest possible frequency
 	pq->tail->left = pq->head;
 	pq->head->right = pq->tail;
 	return pq;
@@ -29,10 +66,10 @@ PriorityQueue *pq_create(uint32_t capacity){
 
 //pq print
 void pq_print(PriorityQueue *q){
-	Node * start = q->head;
+	Housing * start = q->head;
 	for(uint64_t i = 0; i < q->elements; i++){
-		Node * next = start->right;
-		node_print(next);
+		Housing * next = start->right;
+		housing_print(next);
 		start = next;
 	}
 	return;
@@ -61,27 +98,28 @@ uint32_t pq_size(PriorityQueue *q){
 
 //pq enqueue: add something to the queue
 bool enqueue(PriorityQueue *q, Node *n){
+	Housing * h = housing_create(n);
 	if(pq_full(q) == true){
 		return false;
 	}
-	Node *start = q->head;
-	Node * next;
+	Housing * start = q->head;
+	Housing * next;
 	if(pq_empty(q) == true){
 		next = start->right;
-		start->right = n;
-		next->left = n;
-		n->left = start;
-		n->right = next;
+		start->right = h;
+		next->left = h;
+		h->left = start;
+		h->right = next;
 		q->elements += 1;
 		return true;
 	}
 	for(uint64_t i = pq_size(q); i >= 0; i--){
 		next = start->right;
-		if((start->frequency < n->frequency < next->frequency)){
-			start->right = n;
-			next->left = n;
-			n->left = start;
-			n->right = next;
+		if((start->frequency < h->frequency) && (h->frequency < next->frequency)){
+			start->right = h;
+			next->left = h;
+			h->left = start;
+			h->right = next;
 			q->elements += 1;
 			return true;
 		}
@@ -95,19 +133,19 @@ bool dequeue(PriorityQueue *q, Node **n){
 	if(pq_empty(q) == true){
 		return false;
 	}
-	*n = q->head->right;
+	*n = q->head->right->node;
 	q->head->right = q->head->right->right;
-	q->head->right->right->left = q->head;
+	q->head->right->left = q->head;
 	q->elements -= 1;
 	return true;
 }
 
 //pq delete: deletes a priority queue
 void pq_delete(PriorityQueue **q){
-	Node * start = (*q)->head;
+	Housing * start = (*q)->head;
 	for(uint64_t i = 0; i <= pq_size(*q) + 1; i++){
-		Node * next = start->right;
-		node_delete(&start);
+		Housing * next = start->right;
+		housing_delete(&start);
 		start = next;
 	}
 	free(*q);
@@ -116,20 +154,42 @@ void pq_delete(PriorityQueue **q){
 
 int main(){
 	PriorityQueue * pq = pq_create(10);
-	Node * n1 = node_create('A', 12);
-	Node * n2 = node_create('B', 10);
-	Node * n3 = node_create('C', 8);
-	Node * n4 = node_create('w', 1);
+	Node * n1 = node_create('H', 50);
+	Node * n2 = node_create('c', 2);
+	Node * n3 = node_create('l', 5);
+	Node * n4 = node_create('N', 1);
+	Node * n5 = node_create('w', 15);
 	enqueue(pq, n1);
 	enqueue(pq, n2);
 	enqueue(pq, n3);
+	enqueue(pq, n5);
 	printf("pq elements: %lu\n", pq->elements);
 	pq_print(pq);
 	dequeue(pq, &n4);
-	printf("Node 4: ");
+	printf("\n");
+	printf("1st Node 4: ");
+	node_print(n4);
+	printf("pq elements: %lu\n", pq->elements);
+	pq_print(pq);
+	dequeue(pq, &n4);
+	printf("\n");
+	printf("2nd Node 4: ");
+	node_print(n4);
+	printf("pq elements: %lu\n", pq->elements);
+	pq_print(pq);
+	dequeue(pq, &n4);
+	printf("\n");
+	printf("3rd Node 4: ");
+	node_print(n4);
+	printf("pq elements: %lu\n", pq->elements);
+	pq_print(pq);
+	dequeue(pq, &n4);
+	printf("\n");
+	printf("3rd Node 4: ");
 	node_print(n4);
 	printf("pq elements: %lu\n", pq->elements);
 	pq_print(pq);
 	pq_delete(&pq);
 	return 0;
 }
+

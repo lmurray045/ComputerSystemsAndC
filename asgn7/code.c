@@ -25,7 +25,7 @@ bool code_set_bit(Code *c, uint32_t i){
 	uint64_t byte_address = (i) / 8;
 	uint64_t bit_address = i % 8;
 	uint64_t bit_num = pow(2, (bit_address));
-	printf("i: %u, bitnum: %lu, byte: %lu, bit: %lu\n", i, bit_num, byte_address, bit_address);
+	//printf("i: %u, bitnum: %lu, byte: %lu, bit: %lu\n", i, bit_num, byte_address, bit_address);
 	c->bits[byte_address] = c->bits[byte_address] | bit_num;
 	return true;
 }
@@ -116,7 +116,7 @@ void code_print(Code *c){
 		printf("\n");
 	}
 }
-
+/*
 int main(void){
 	Code c = code_init();
 	assert(code_push_bit(&c, 1));
@@ -135,3 +135,4 @@ int main(void){
 	code_print(&c);
 	return 0;
 }
+*/

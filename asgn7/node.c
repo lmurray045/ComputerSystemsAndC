@@ -27,6 +27,11 @@ void node_print(Node *n){
 	printf("Symbol: '");
 	node_print_sym(n);
 	printf("', Frequency: %lu.", n->frequency);
+	//printf(" left child: '");
+	//node_print_sym(n->left);
+	//printf("'. right child: '");
+	//node_print_sym(n->right);
+	//printf("'");
 	printf("\n");
 	return;
 }
