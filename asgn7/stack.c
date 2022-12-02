@@ -80,7 +80,7 @@ bool stack_pop(Stack *s, Node **n){
 	*n = *(s->items + s->top);
 	return true;
 }
-
+/*
 int main(void){
 	Node* n1 = node_create('H', 10);
 	Node* n2 = node_create('I', 12);
@@ -100,4 +100,4 @@ int main(void){
 	stack_delete(&stack);
 	return 0;
 }
-
+*/

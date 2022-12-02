@@ -4,6 +4,7 @@
 #include "huffman.h"
 #include "pq.h"
 #include "io.h"
+#include "stack.h"
 #include <fcntl.h>
 #include <math.h>
 
@@ -76,6 +77,47 @@ void build_codes(Node *root, Code table[static ALPHABET]){
 	return;
 }
 
+//dump the tree, so that it can reconstructed
+void dump_tree(int outfile, Node *root){
+	if(root != NULL){
+		dump_tree(outfile, root->left);
+		dump_tree(outfile, root->right);
+		if(root->left == NULL && root->right == NULL){
+			uint8_t buf[] = {'L', root->symbol};
+			write_bytes(outfile, &buf[0], 2);
+			return;
+		}
+		else{
+			uint8_t buf[] = {'I'};
+			write_bytes(outfile, &buf[0], 1);
+			return;
+		}
+	}
+	return;
+}
+
+//rebuild the tree based on what it dumped :)
+Node *rebuild_tree(uint16_t nbytes, uint8_t tree[static nbytes]){
+	Stack * s = stack_create(nbytes); 
+	for(uint16_t i = 0; i < nbytes; i++){
+		if(tree[i] == 'L'){
+			Node * n1 = node_create(tree[i+1], 0);
+			stack_push(s, n1);
+		}
+		if(tree[i] == 'I'){
+			Node * nl; 
+			stack_pop(s, &nl);
+			Node * nr;
+			stack_pop(s, &nr);
+			Node * parent = node_join(nr, nl);
+			stack_push(s, parent);
+		}
+	}
+	Node * root;
+	stack_pop(s, &root);
+	return root;
+}
+
 int main(void){
 	uint64_t hist[ALPHABET];
 	Code table[ALPHABET];
@@ -88,7 +130,35 @@ int main(void){
 	hist['w'] = 15;
 	Node * parent;
 	parent = build_tree(hist);
-	
+	/*
+	int fdo = open("example2.txt", O_WRONLY | O_CREAT);
+	write_code(fdo, &table['H']);
+	write_code(fdo, &table['c']);
+	write_code(fdo, &table['l']);
+	write_code(fdo, &table['w']);
+	flush_codes(fdo);
+	close(fdo);
+	printf("\n\n");
+	uint8_t bit;
+	int fd = open("example2.txt", O_RDONLY);
+	printf("example2.txt in binary: ");
+	int counter;
+	for(counter = 1; counter != 500 && read_bit(fd, &bit) == true; counter++){
+		printf("%d", bit);
+		if(counter % 8 == 0 && counter != 0){
+			printf(" ");
+		}
+	}
+	printf("\n");
+	*/
+	int fdo = open("example2.txt", O_WRONLY | O_CREAT);
+	dump_tree(fdo, parent);
+	close(fdo);
+	uint8_t dump[11];
+	int fdi = open("example2.txt", O_RDONLY);
+	read_bytes(fdi, &dump[0], 11);
+	close(fdi);
+	parent = rebuild_tree(11, dump);
 	printf("\n");
 	node_print(parent);
 	printf("parent left: ");
@@ -115,26 +185,5 @@ int main(void){
 	code_print(&table['l']);
 	printf("w code: ");
 	code_print(&table['w']);
-	
-	int fdo = open("example2.txt", O_WRONLY | O_CREAT);
-	write_code(fdo, &table['H']);
-	write_code(fdo, &table['c']);
-	write_code(fdo, &table['l']);
-	write_code(fdo, &table['w']);
-	flush_codes(fdo);
-	close(fdo);
-	printf("\n\n");
-	uint8_t bit;
-	int fd = open("example2.txt", O_RDONLY);
-	printf("example2.txt in binary: ");
-	int counter;
-	for(counter = 1; counter != 500 && read_bit(fd, &bit) == true; counter++){
-		printf("%d", bit);
-		if(counter % 8 == 0 && counter != 0){
-			printf(" ");
-		}
-	}
-	printf("\n");
-	
 	return 0;
 }
