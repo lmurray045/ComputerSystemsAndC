@@ -118,6 +118,16 @@ Node *rebuild_tree(uint16_t nbytes, uint8_t tree[static nbytes]){
 	return root;
 }
 
+//deletes a tree
+void delete_tree(Node **root){
+	if((*root) != NULL){
+		delete_tree(&((*root)->left));
+		delete_tree(&((*root)->right));
+		node_delete(root);
+	}
+	return;
+}
+
 int main(void){
 	uint64_t hist[ALPHABET];
 	Code table[ALPHABET];
@@ -185,5 +195,6 @@ int main(void){
 	code_print(&table['l']);
 	printf("w code: ");
 	code_print(&table['w']);
+	delete_tree(&parent);
 	return 0;
 }
