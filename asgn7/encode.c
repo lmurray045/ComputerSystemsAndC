@@ -4,6 +4,7 @@
 #include <math.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
 #include "code.h"
 #include "stack.h"
 #include "pq.h"
@@ -34,12 +35,12 @@ int main(int argc, char **argv) {
 				break;
 			case 'i':
 				infile = (char *)calloc(sizeof(optarg), sizeof(char));
-				*infile = *optarg;
+				strcpy(infile, optarg);
 				stin = 0;
 				break;
 			case 'o':
 				outfile = (char *)calloc(sizeof(optarg), sizeof(char));
-				*outfile = *optarg;
+				strcpy(outfile, optarg);
 				stout = 0;
 				break;
 		}
@@ -85,11 +86,6 @@ int main(int argc, char **argv) {
 		}
 	}
 	counter = (3 * counter) - 1;
-	//for(uint64_t i = 0; i < ALPHABET; i++){
-	//	printf("%lu ", hist[i]);
-	//}
-	//printf("\n");
-	//build tree and codes
 	Node * root = build_tree(hist);
 	build_codes(root, table);
 	
@@ -116,10 +112,6 @@ int main(int argc, char **argv) {
 	};
 	union Head head;
 	head.header = (*header);
-	for(int i = 0; i < 16; i++){
-		printf("%d ", head.buf[i]);
-	}
-	printf("\n");
 	fchmod(f_out, (&stats)->st_mode);
 	//write out the header
 	write_bytes(f_out, &(head.buf)[0], sizeof(Header));
