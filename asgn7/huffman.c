@@ -15,12 +15,10 @@ Node *build_tree(uint64_t hist[static ALPHABET]){
 	PriorityQueue *pq = pq_create(ALPHABET);
 	for(uint64_t i = 0; i < ALPHABET; i ++){
 		if(hist[i] > 0){
-			
 			Node * n = node_create(i, hist[i]);
 			enqueue(pq, n);
 		}
 	}
-	pq_print(pq);
 	Node * parent;
 	while(pq_size(pq) > 1){
 		Node * n1;
@@ -40,7 +38,6 @@ Node *build_tree(uint64_t hist[static ALPHABET]){
 //auxillary function for recursive searching
 void traverse_code(Code * code, Node * n, uint8_t pushcode, Code table[static ALPHABET]){
 	uint8_t throwaway;
-	printf("iterating...\n");
 	if(pushcode == 1){
 		code_push_bit(code, 1);
 	}
@@ -48,9 +45,6 @@ void traverse_code(Code * code, Node * n, uint8_t pushcode, Code table[static AL
 		code_push_bit(code, 0);
 	}
 	if(n != NULL){
-		node_print(n);
-		printf("code: ");
-		code_print(code);
 		traverse_code(code, n->left, 0, table);
 		if(n->left == NULL && n->right == NULL){
 			table[n->symbol] = *code;
@@ -127,7 +121,7 @@ void delete_tree(Node **root){
 	}
 	return;
 }
-
+/*
 int main(void){
 	uint64_t hist[ALPHABET];
 	Code table[ALPHABET];
@@ -140,7 +134,7 @@ int main(void){
 	hist['w'] = 15;
 	Node * parent;
 	parent = build_tree(hist);
-	/*
+	
 	int fdo = open("example2.txt", O_WRONLY | O_CREAT);
 	write_code(fdo, &table['H']);
 	write_code(fdo, &table['c']);
@@ -160,7 +154,6 @@ int main(void){
 		}
 	}
 	printf("\n");
-	*/
 	int fdo = open("example2.txt", O_WRONLY | O_CREAT);
 	dump_tree(fdo, parent);
 	close(fdo);
@@ -198,3 +191,4 @@ int main(void){
 	delete_tree(&parent);
 	return 0;
 }
+*/

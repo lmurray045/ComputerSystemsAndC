@@ -38,7 +38,7 @@ int read_bytes(int infile, uint8_t *buf, int nbytes){
 //write bytes: function for writing bytes to a file
 int write_bytes(int outfile, uint8_t *buf, int nbytes){
 	int counter = 0;
-	while(*(buf+counter) != 0 && write(outfile, (buf + counter), 1) != 0){
+	while(write(outfile, (buf + counter), 1) != 0){
 		counter += 1;
 		if(counter == nbytes){
 			break;

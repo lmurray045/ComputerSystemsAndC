@@ -115,7 +115,7 @@ bool enqueue(PriorityQueue *q, Node *n){
 	}
 	for(uint64_t i = pq_size(q); i >= 0; i--){
 		next = start->right;
-		if((start->frequency < h->frequency) && (h->frequency < next->frequency)){
+		if((start->frequency <= h->frequency) && (h->frequency < next->frequency)){
 			start->right = h;
 			next->left = h;
 			h->left = start;
