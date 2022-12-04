@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 		switch (opt) {
 		// if its p, set p param to the argument
 			case 'h':
-				fprintf(stderr, "Help Message\n");
+				fprintf(stderr, "SYNOPSIS\n  A Huffman decoder.\n  Decompresses a file using the Huffman coding algorithm.\n\nUSAGE\n  ./decode [-h] [-i infile] [-o outfile]\nOPTIONS\n\n  -h             Program usage and help.\n  -v             Print compression statistics.\n  -i infile      Input file to decompress.\n  -o outfile     Output of decompressed data.\n");
 				return 0;
 			case 'v':
 				fprintf(stderr, "Statistics\n");
