@@ -15,6 +15,7 @@
 #include "defines.h"
 #define OPTIONS "hvi:o:"
 
+
 //huffman encoding module. Contains main function. Executes huffman encoding on given inputs.
 int main(int argc, char **argv) {
 	uint64_t hist[ALPHABET] = {0};
