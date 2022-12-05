@@ -95,15 +95,16 @@ Node *rebuild_tree(uint16_t nbytes, uint8_t tree[static nbytes]){
 	Stack * s = stack_create(nbytes); 
 	for(uint16_t i = 0; i < nbytes; i++){
 		if(tree[i] == 'L'){
-			Node * n1 = node_create(tree[i+1], 0);
+			Node * n1 = node_create(tree[i+1], 1);
+			i++;
 			stack_push(s, n1);
 		}
-		if(tree[i] == 'I'){
-			Node * nl; 
-			stack_pop(s, &nl);
-			Node * nr;
+		else if(tree[i] == 'I'){
+			Node * nr; 
 			stack_pop(s, &nr);
-			Node * parent = node_join(nr, nl);
+			Node * nl;
+			stack_pop(s, &nl);
+			Node * parent = node_join(nl, nr);
 			stack_push(s, parent);
 		}
 	}

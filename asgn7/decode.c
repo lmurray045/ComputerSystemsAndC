@@ -68,25 +68,30 @@ int main(int argc, char **argv) {
 	//read in header
 	read_bytes(f_in, &hunion.headbuf[0], sizeof(Header));
 	if(hunion.header.magic != MAGIC){
-		fprintf(stderr, "ERROR: invalid file passed.\n");
+		fprintf(stderr, "SYNOPSIS\n  A Huffman decoder.\n  Decompresses a file using the Huffman coding algorithm.\n\nUSAGE\n  ./decode [-h] [-i infile] [-o outfile]\nOPTIONS\n\n  -h             Program usage and help.\n  -v             Print compression statistics.\n  -i infile      Input file to decompress.\n  -o outfile     Output of decompressed data.\n");
 		return 1;
 	}
 	//set outfile permissions
 	fchmod(f_out, hunion.header.permissions);
 	//read in tree info from infile
-	uint8_t * tree = (uint8_t *)calloc( hunion.header.tree_size, sizeof(uint8_t));
-	read_bytes(f_in, tree, hunion.header.tree_size);
+	uint8_t * tree = (uint8_t *)calloc((hunion.header.tree_size), sizeof(uint8_t));
+	read_bytes(f_in, tree, (hunion.header.tree_size));
 	//rebuild the tree
-	Node * root = rebuild_tree(hunion.header.tree_size, tree);
+	Node * root = rebuild_tree((hunion.header.tree_size), tree);
 	Node * traverser = root;
 	//time to traverse file and write to outfile
 	uint8_t bit;
 	uint8_t out_char[1]; //array for writing out symbols
+	//dump_tree(f_out, root);
+	//printf("tree size: %d\n", hunion.header.tree_size);
 	for(uint64_t counter = 0; counter < (hunion.header.file_size);){
 		read_bit(f_in, &bit);
+		//fprintf(stderr, "%d", bit);
 		if(bit == 0){
 			traverser = traverser->left;
 			if(traverser->left == NULL && traverser->right == NULL){
+				//fprintf(stderr, "\n");
+				//fprintf(stderr, "symbol: %c\n", traverser->symbol);
 				out_char[0] = traverser->symbol;
 				write_bytes(f_out, &out_char[0], 1);
 				counter++;
@@ -96,6 +101,8 @@ int main(int argc, char **argv) {
 		else if(bit == 1){
 			traverser = traverser->right;
 			if(traverser->left == NULL && traverser->right == NULL){
+				//fprintf(stderr, "\n");
+				//fprintf(stderr, "symbol: %c\n", traverser->symbol);
 				out_char[0] = traverser->symbol;
 				write_bytes(f_out, &out_char[0], 1);
 				counter++;
