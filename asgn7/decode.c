@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
 	//read in header
 	read_bytes(f_in, &hunion.headbuf[0], sizeof(Header));
 	if(hunion.header.magic != MAGIC){
-		fprintf(stderr, "SYNOPSIS\n  A Huffman decoder.\n  Decompresses a file using the Huffman coding algorithm.\n\nUSAGE\n  ./decode [-h] [-i infile] [-o outfile]\nOPTIONS\n\n  -h             Program usage and help.\n  -v             Print compression statistics.\n  -i infile      Input file to decompress.\n  -o outfile     Output of decompressed data.\n");
+		fprintf(stderr, "Invalid magic number.\n");
 		return 1;
 	}
 	//set outfile permissions
