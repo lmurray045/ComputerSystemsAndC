@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
 	char * outfile = NULL;
 	int stin = 1;
 	int stout = 1;
+	int printstats = 0;
 	int opt = 0;
 	while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
 		switch (opt) {
@@ -32,7 +33,7 @@ int main(int argc, char **argv) {
 				fprintf(stderr, "SYNOPSIS\n  A Huffman encoder.\n  Compresses a file using the Huffman coding algorithm.\n\nUSAGE\n  ./encode [-h] [-i infile] [-o outfile]\n\nOPTIONS\n  -h             Program usage and help.\n  -v             Print compression statistics.\n  -i infile      Input file to compress.\n  -o outfile     Output of compressed data.\n");
 				return 1;
 			case 'v':
-				fprintf(stderr, "Statistics\n");
+				printstats = 1;
 				break;
 			case 'i':
 				infile = (char *)calloc(sizeof(optarg), sizeof(char));
@@ -132,10 +133,21 @@ int main(int argc, char **argv) {
 		write_code(f_out, &table[readbuf[0]]);
 	}
 	flush_codes(f_out);
+	//reopen the outfile to get its stats
+	if(printstats == 1){
+		fprintf(stderr, "Uncompressed file size: %lu bytes\n", header->file_size);
+		fprintf(stderr, "Compressed file size: %lu bytes\n", (bytes_written - header->file_size) + 3);
+		float temphead = header->file_size;
+		float tempsize = (bytes_written - temphead) + 3;
+		float spacesave = 100 * (1 - (tempsize / temphead));
+		fprintf(stderr, "Space saving: %.2f", spacesave);
+		fprintf(stderr, "%%");
+		fprintf(stderr, "\n");
+	}
+	close(f_out);
 	close(f_in2);
 	//SOURCE CITATION: I had to lookup how to use the remove function. I found the man page for it, but still used google for help.
 	remove("temp.txt");
-	close(f_out);
 	return 0;
 	//
 }

@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
 	char * outfile = NULL;
 	int stin = 1;
 	int stout = 1;
+	int printstats = 0;
 	int opt = 0;
 	while ((opt = getopt(argc, argv, OPTIONS)) != -1) {
 		switch (opt) {
@@ -29,7 +30,7 @@ int main(int argc, char **argv) {
 				fprintf(stderr, "SYNOPSIS\n  A Huffman decoder.\n  Decompresses a file using the Huffman coding algorithm.\n\nUSAGE\n  ./decode [-h] [-i infile] [-o outfile]\nOPTIONS\n\n  -h             Program usage and help.\n  -v             Print compression statistics.\n  -i infile      Input file to decompress.\n  -o outfile     Output of decompressed data.\n");
 				return 0;
 			case 'v':
-				fprintf(stderr, "Statistics\n");
+				printstats = 1;
 				break;
 			case 'i':
 				infile = (char *)calloc(sizeof(optarg), sizeof(char));
@@ -110,6 +111,18 @@ int main(int argc, char **argv) {
 			}
 		}
 		
+	}
+	//struct stat stats;
+	//fstat(f_in, &stats);
+	if(printstats == 1){
+		fprintf(stderr, "Compressed file size: %lu bytes\n", bytes_read);
+		fprintf(stderr, "Uncompressed file size: %lu bytes\n", (bytes_written));
+		float temphead = bytes_read;
+		float tempsize = (bytes_written);
+		float spacesave = 100 * (1 - (temphead / tempsize));
+		fprintf(stderr, "Space saving: %.2f", spacesave);
+		fprintf(stderr, "%%");
+		fprintf(stderr, "\n");
 	}
 	close(f_in);
 	close(f_out);
