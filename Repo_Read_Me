@@ -1,0 +1,42 @@
+READ ME: Updated 03/27/23
+
+Code From Fall of 2022
+
+This repository is an archive of assignments and code snippets from the class CSE 13s, "Computer Systems and C programming" at UC Santa Cruz. 
+
+Although the class was challenging, it made me into a much better programmer, and taught me the value of hard work, the cost of procrastination,
+and the nessesity of a wrought iron work ethic.
+
+Each assignment folder contains scripts for generating the assignment executable, a Makefile, and a "readme" with more information. Assignments 0 through
+4 were completed within one week of being assigned, and assignments 5 through 7 took two weeks.
+
+Not all of the code here is fully functional and correct. Given the strict, short deadlines, I often had to crunch to get as much code working as possible.
+I am not proud of the shortcuts I took. However, I am happy to say that because of the steep learning curve, I was able tomanage time and produce working
+projects much more efficiently.
+
+Another side effect of this is that most of the code has very poor documentation and commenting. I considered going back and commenting over the code
+to provide more insight, however I feel that it would be disingenuous to edit and improve the projects after the fact. It is important to me that those
+who look at this code, whether it be myself, a future employer, or a peer, understand exactly where I was at this point in my journey. The only way to
+see how far you've come is to look at where you came from. 
+
+Highlights:
+
+Assignment 5: RSA Encryption Algorithm
+  This assignment was designed to be an introduction into cryptography, teaching us how the process encryption and decryption works. Each student was
+  tasked with using fundemental encoding techniques to mimic the ubiquitous RSA algorithm.
+  
+Assignment 6: Text Filter
+  This assignment was primarily used to teach students about bloom filters, hashtables, and text parsing. It was themed after George Orwells "1984".
+  Students were asked to create a program that takes text as an input, detect certain "banned" words, and output warnings based on the severity of the
+  infraction.
+  
+ Assignment 7: File Compression Software
+  This assignment taught students about how file compression works, and certain encoding and decoding techniques. Students were tasked with creating a 
+  program that uses Huffman Tree Encoding to transform data into a zero-loss space-saving format, and then decompress it using the generating Huffman Tree.
+  
+
+Enjoy exploring the old projects! 
+
+Best, 
+
+Liam Murray
