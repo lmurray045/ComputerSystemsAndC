@@ -1,3 +1,7 @@
+Bash Scripting program
+
+Creates graphs to visualize numerical data (specifically, the collatz sequence of the given input)
+
 Included Files: 
 README.md
 DESIGN.pdf: Describes the implementation of plot.sh and how it functions.
